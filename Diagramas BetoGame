@@ -1,0 +1,105 @@
+<mxfile host="app.diagrams.net" modified="2023-11-10T20:17:09.635Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36 OPR/103.0.0.0" etag="bRFIN4Y2z8E3PSXywTf9" version="22.1.0" type="google">
+  <diagram name="MR" id="EhN475le3y6grC894DxG">
+    <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="scNmaI9I52cUoxHxIQNd-1" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;text-decoration:underline;&quot;&gt;&lt;b&gt;Cliente&lt;/b&gt;&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;#* ci: numerico(10)&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;* nombre: varchar(30)&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;* apellido: varchar(30)&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;* genero: varchar(10) (Check)&lt;/span&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;* f_nacimiento: date(YYYY-MM-DD)&lt;/span&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;* ubicacion: varchar(100)&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;* telefono: varchar(15)&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;* correo: varchar(50)&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;* f_creacion: date(YYYY-MM-DD)&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;° f_actualizacion: date(YYYY-MM-DD)&lt;br&gt;&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;whiteSpace=wrap;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="180" y="23.75" width="220" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="scNmaI9I52cUoxHxIQNd-2" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;text-decoration:underline;&quot;&gt;&lt;b&gt;Sesion&lt;/b&gt;&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;*# id: nuemrico(5)&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;* fh_inicio: datetime(YYYY-MM-DDTHH:MM:SS)&amp;nbsp;&lt;span style=&quot;background-color: initial;&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;* fh_final: datetime(YYYY-MM-DDTHH:MM:SS)&amp;nbsp;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;* id_cliente: numerico(10) (FK)&lt;/span&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;* id_consola: numerico(2) (FK)&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;* met_pago: varchar(15&lt;/span&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;) (Check)&lt;/span&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;* cant_horas: numerico(1,5)&lt;span style=&quot;background-color: initial;&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;* cant_personas: numerico(2)&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;whiteSpace=wrap;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="490" y="43.6" width="310" height="150.31" as="geometry" />
+        </mxCell>
+        <mxCell id="scNmaI9I52cUoxHxIQNd-3" value="Alquila" style="html=1;verticalAlign=bottom;endArrow=ERmany;endSize=16;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=1;endFill=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="scNmaI9I52cUoxHxIQNd-1" target="scNmaI9I52cUoxHxIQNd-2">
+          <mxGeometry x="-0.142" relative="1" as="geometry">
+            <mxPoint x="380" y="118.75" as="sourcePoint" />
+            <mxPoint x="470" y="128.75" as="targetPoint" />
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="440" y="118.75" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="scNmaI9I52cUoxHxIQNd-4" value="&amp;gt; Llave Primaria (#)&lt;span style=&quot;white-space: pre;&quot;&gt; &lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt; &lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&amp;gt; No Nulo (*) / Nulo (°)&lt;br&gt;&amp;gt; Llave Foranea (FK)&lt;span style=&quot;white-space: pre;&quot;&gt; &lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt; &lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt; &lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;span style=&quot;white-space: pre;&quot;&gt;&#x9;&lt;/span&gt;&lt;/span&gt;&amp;gt; Ocurrencia Unica (U)&lt;br&gt;&amp;gt; Lista de Valores (Check)" style="text;html=1;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;whiteSpace=wrap;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="10" y="644.75" width="340" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="scNmaI9I52cUoxHxIQNd-5" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;text-decoration:underline;&quot;&gt;&lt;b&gt;Consola&lt;/b&gt;&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;#* numero: numerico(2)&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;* cant_controles: numerico(2)&lt;/span&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;° serial: varchar(30)&lt;span style=&quot;background-color: initial;&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;whiteSpace=wrap;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="220" y="273.5" width="210" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="scNmaI9I52cUoxHxIQNd-6" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;text-decoration:underline;&quot;&gt;&lt;b&gt;Juego&lt;/b&gt;&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;#* id: numerico(5)&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;* nombre: varchar(30)&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;* f_compra: date(YYY-MM-DD)&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;* generos: varchar(50)&lt;/span&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;* precio_compra: date(YYYY-MM-DD)&lt;/span&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;* cantidad: numerico(2)&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;* tipo: varchar(20) (Check)&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;* empresa: varchar(50)&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;whiteSpace=wrap;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="540" y="239.75" width="230" height="157.5" as="geometry" />
+        </mxCell>
+        <mxCell id="scNmaI9I52cUoxHxIQNd-7" value="Posee" style="html=1;verticalAlign=bottom;endArrow=ERmany;endSize=16;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=1;endFill=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;startArrow=ERmany;startFill=0;startSize=16;" edge="1" parent="1" source="scNmaI9I52cUoxHxIQNd-5" target="scNmaI9I52cUoxHxIQNd-6">
+          <mxGeometry x="-0.0905" y="-21" relative="1" as="geometry">
+            <mxPoint x="360" y="39.75" as="sourcePoint" />
+            <mxPoint x="460" y="39.75" as="targetPoint" />
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="460" y="318.75" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="scNmaI9I52cUoxHxIQNd-11" value="Incluye" style="html=1;verticalAlign=bottom;endArrow=ERmany;endSize=16;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=1;endFill=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="scNmaI9I52cUoxHxIQNd-5" target="scNmaI9I52cUoxHxIQNd-2">
+          <mxGeometry x="-0.142" relative="1" as="geometry">
+            <mxPoint x="400" y="128.75" as="sourcePoint" />
+            <mxPoint x="510" y="128.75" as="targetPoint" />
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="490" y="230" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="scNmaI9I52cUoxHxIQNd-12" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;text-decoration:underline;&quot;&gt;&lt;b&gt;Compra&lt;/b&gt;&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;#* id: numerico(5)&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;* id_producto: numerico(5)&lt;/span&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;* id_cliente: numerico(10)&lt;span style=&quot;background-color: initial;&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;* met_pago: varchar(15) (Check)&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;* fh_compra: datetime(YYYY-MM-DDTHH:MM:SS)&amp;nbsp;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;* cantidad: numerico(5)&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;* monto: numerico(8,2)&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;whiteSpace=wrap;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="10" y="370" width="210" height="157.97" as="geometry" />
+        </mxCell>
+        <mxCell id="scNmaI9I52cUoxHxIQNd-13" value="Realiza" style="html=1;verticalAlign=bottom;endArrow=ERmany;endSize=16;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=1;endFill=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="scNmaI9I52cUoxHxIQNd-1" target="scNmaI9I52cUoxHxIQNd-12">
+          <mxGeometry x="-0.142" relative="1" as="geometry">
+            <mxPoint x="400" y="129" as="sourcePoint" />
+            <mxPoint x="280" y="471" as="targetPoint" />
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="130" y="119" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="scNmaI9I52cUoxHxIQNd-14" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;text-decoration:underline;&quot;&gt;&lt;b&gt;Producto&lt;/b&gt;&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;#* id: numerico(5)&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;* nombre: varchar(40)&lt;/span&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;* precio_venta: numerico(8,2)&lt;span style=&quot;background-color: initial;&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;* cant_invent: numerico(3)&amp;nbsp;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;* tipo_producto: varchar(25) (Check)&amp;nbsp;&lt;/p&gt;&lt;p style=&quot;border-color: var(--border-color); margin: 0px 0px 0px 8px;&quot;&gt;* f_creacion: date(YYYY-MM-DD)&lt;/p&gt;&lt;p style=&quot;border-color: var(--border-color); margin: 0px 0px 0px 8px;&quot;&gt;° f_actualizacion: date(YYYY-MM-DD)&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;whiteSpace=wrap;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="260" y="420" width="230" height="140.23" as="geometry" />
+        </mxCell>
+        <mxCell id="scNmaI9I52cUoxHxIQNd-15" value="Pertenece" style="html=1;verticalAlign=bottom;endArrow=none;endSize=16;edgeStyle=elbowEdgeStyle;elbow=vertical;curved=0;rounded=1;endFill=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="scNmaI9I52cUoxHxIQNd-12" target="scNmaI9I52cUoxHxIQNd-14">
+          <mxGeometry x="-0.142" relative="1" as="geometry">
+            <mxPoint x="170" y="510.115" as="sourcePoint" />
+            <mxPoint y="681.36" as="targetPoint" />
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="130" y="580" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="scNmaI9I52cUoxHxIQNd-16" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;text-decoration:underline;&quot;&gt;&lt;b&gt;Hist_Precios&lt;/b&gt;&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;#* id: numerico(5)&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;* id_producto: numerico(5)&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;* precio: numerico(8,2)&lt;/span&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;* fh_registro: datetime(YYYY-MM-DDTHH:MM:SS)&amp;nbsp;&lt;span style=&quot;background-color: initial;&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;* vigente: booleano&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;whiteSpace=wrap;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="550" y="425.68" width="210" height="128.87" as="geometry" />
+        </mxCell>
+        <mxCell id="scNmaI9I52cUoxHxIQNd-17" value="Posee" style="html=1;verticalAlign=bottom;endArrow=ERmany;endSize=16;edgeStyle=elbowEdgeStyle;elbow=horizontal;curved=0;rounded=1;endFill=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="scNmaI9I52cUoxHxIQNd-14" target="scNmaI9I52cUoxHxIQNd-16">
+          <mxGeometry x="-0.142" relative="1" as="geometry">
+            <mxPoint x="520" y="520" as="sourcePoint" />
+            <mxPoint x="630" y="520" as="targetPoint" />
+            <mxPoint as="offset" />
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="scNmaI9I52cUoxHxIQNd-18" value="&lt;p style=&quot;margin:0px;margin-top:4px;text-align:center;text-decoration:underline;&quot;&gt;&lt;b&gt;Entrada&lt;/b&gt;&lt;/p&gt;&lt;hr&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;#* id: numerico(5)&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;&lt;span style=&quot;background-color: initial;&quot;&gt;* costo: numerico(8,2)&lt;/span&gt;&lt;br&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;* id_producto: numerico(5)&lt;span style=&quot;background-color: initial;&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;* fh_registro: datetime(YYYY-MM-DDTHH:MM:SS)&amp;nbsp;&lt;span style=&quot;background-color: initial;&quot;&gt;&lt;br&gt;&lt;/span&gt;&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;* tipo_entrada: varchar(30) (Check)&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;* cant_ingresada: numerico(5)&lt;/p&gt;&lt;p style=&quot;margin:0px;margin-left:8px;&quot;&gt;° proveedor: varchar(30)&lt;/p&gt;" style="verticalAlign=top;align=left;overflow=fill;fontSize=12;fontFamily=Helvetica;html=1;whiteSpace=wrap;rounded=1;" vertex="1" parent="1">
+          <mxGeometry x="500" y="590" width="290" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="scNmaI9I52cUoxHxIQNd-19" value="Posee" style="html=1;verticalAlign=bottom;endArrow=ERmany;endSize=16;edgeStyle=elbowEdgeStyle;elbow=horizontal;curved=0;rounded=1;endFill=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="scNmaI9I52cUoxHxIQNd-14" target="scNmaI9I52cUoxHxIQNd-18">
+          <mxGeometry x="-0.2154" relative="1" as="geometry">
+            <mxPoint x="280" y="500.36" as="sourcePoint" />
+            <mxPoint x="170" y="500.36" as="targetPoint" />
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="375" y="601.36" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
