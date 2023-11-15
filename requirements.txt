@@ -5,7 +5,9 @@ Django==4.2.7
 django-jazzmin==2.6.0
 gunicorn==21.2.0
 idna==3.4
+mysql-connector-python==8.2.0
 packaging==23.2
+protobuf==4.21.12
 pytz==2023.3.post1
 requests==2.31.0
 sqlparse==0.4.4

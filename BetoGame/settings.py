@@ -84,12 +84,24 @@ WSGI_APPLICATION = "BetoGame.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+if (DEBUG):
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR / "db.sqlite3",
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'railway',
+            'USER': 'root',
+            'PASSWORD': '112eg2H14bD4cg4ge3DCc2bahDeA5C6G',
+            'HOST': 'viaduct.proxy.rlwy.net',  # Puedes cambiar esto si tu base de datos está en otro servidor
+            'PORT': '42542',  # Este es el puerto predeterminado de MySQL
+        }
+    }
 
 
 # Password validation
