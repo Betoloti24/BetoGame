@@ -1,0 +1,19 @@
+INSTALACION
+1. Instalar Python 3.12.0 https://www.python.org/ftp/python/3.12.0/python-3.12.0-amd64.exe
+    1.1 Ejecuta como administrador
+    1.2 Marca la opcion de agregar al PATH en la parte inferior de la ventana
+    1.3 Pulsa siguiente al terminar la instalacion, pulsas finalizar
+2. Instalar Git https://github.com/git-for-windows/git/releases/download/v2.42.0.windows.2/Git-2.42.0.2-64-bit.exe
+    2.1 Ejecuta como administrador
+    2.2 Pulsa solo next hasta que aparezca el boton de install
+    2.3 Al finalizar la instalacion, desmarca la opcion de ejecutar View Release Notes
+    2.4 Pulsar Finalizar
+3. Reinicia la PC
+3. Copia el archivo rar del programa en el directorio raiz C:\
+4. Descomprime el contenido de la carpeta sin guardarlo en una subcarpeta
+5. Entra al directorio BetoGame y ejecuta como administrador el archivo instalador.bat
+5. Al finalizar la instalacion y se abra el navegador con la plataforma web, guarda la url de la pagina
+NOTA: La URL de la pagina es 127.0.0.1:8000
+
+ACTUALIZACION
+1. Ejecuta como administrador el archivo de actualizar.bat
