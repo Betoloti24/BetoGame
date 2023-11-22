@@ -42,8 +42,9 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # Mis Aplicaciones
-    "Inventario",
+    "Caja",
     "Local",
+    "Inventario",
 ]
 
 X_FRAME_OPTIONS = 'SAMEORIGIN'

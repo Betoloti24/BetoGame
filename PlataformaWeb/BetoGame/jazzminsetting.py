@@ -37,17 +37,18 @@ JAZZMIN_SETTINGS = {
     "topmenu_links": [
 
         # Url that gets reversed (Permissions can be added)
-        {"name": "Principal",  "url": "admin:index", "permissions": ["auth.view_user"]},
+        # {"name": "Principal",  "url": "admin:index", "permissions": ["auth.view_user"]},
 
-        # external url that opens in a new window (Permissions can be added)
-        # {"name": "Support", "url": "https://github.com/farridav/django-jazzmin/issues", "new_window": True},
+        # # external url that opens in a new window (Permissions can be added)
+        # # {"name": "Support", "url": "https://github.com/farridav/django-jazzmin/issues", "new_window": True},
 
-        # model admin to link to (Permissions checked against model)
-        {"model": "auth.User"},
+        # # model admin to link to (Permissions checked against model)
+        # {"model": "auth.User"},
 
-        # App with dropdown menu to all its models pages (Permissions checked against models)
-        {"app": "Inventario"},
-        {"app": "Local"},
+        # # App with dropdown menu to all its models pages (Permissions checked against models)
+        # {"app": "Inventario"},
+        # {"app": "Local"},
+        # {"app": "Caja"},
     ],
 
     #############
@@ -57,7 +58,7 @@ JAZZMIN_SETTINGS = {
     # Additional links to include in the user menu on the top right ("app" url type is not allowed)
     "usermenu_links": [
         # {"name": "Support", "url": "https://github.com/farridav/django-jazzmin/issues", "new_window": True},
-        {"model": "auth.user"}
+        # {"model": "auth.user"}
     ],
 
     #############
@@ -105,6 +106,11 @@ JAZZMIN_SETTINGS = {
         "Local.Juego": "fab fa-playstation",
         "Local.Consola": "fas fa-gamepad",
         "Local.Sesion": "fas fa-stopwatch",
+        "Caja.Cuenta": "fas fa-cash-register",
+        "Caja.Pago": "fas fa-file-invoice-dollar",
+        "Caja.Cierre": "fas fa-book",
+        "Caja.Variable": "fas fa-subscript",
+        "Caja.HistoricoValores": "fas fa-search-dollar"
     },
     # Icons that are used when one is not manually specified
     "default_icon_parents": "fas fa-chevron-circle-right",
@@ -114,7 +120,7 @@ JAZZMIN_SETTINGS = {
     # Related Modal #
     #################
     # Use modals instead of popups
-    "related_modal_active": True,
+    "related_modal_active": False,
 
     #############
     # UI Tweaks #

@@ -2,11 +2,6 @@ from django.contrib import admin
 from .models import Producto
 from django.contrib import messages
 from django.utils.html import format_html
-
-## Registro de los modelos por decorador
-
-# Producto
-from django.contrib import admin
 from .models import Producto, HistoricoPrecios, Entrada
 
 @admin.register(Producto)
@@ -15,7 +10,7 @@ class ProductoAdmin(admin.ModelAdmin):
     list_filter = ('tipo_producto',)
     search_fields = ('nombre',)
     date_hierarchy = 'f_creacion'
-    ordering = ('-f_creacion',)
+    
     readonly_fields = ('f_actualizacion',)
 
     # Formateo de las fechas

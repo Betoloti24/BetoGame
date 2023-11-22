@@ -1,16 +1,13 @@
-from django.contrib import admin
+from django.contrib import admin 
 from .models import Compra, Cliente, Consola, Juego, Sesion
 from Inventario.models import Producto
 from datetime import datetime
 from django.contrib import messages
 from django.utils.html import format_html
 
-# Register your models here.
-
 @admin.register(Compra)
 class CompraAdmin(admin.ModelAdmin):
-    list_display = ('id', 'id_producto', 'id_cliente', 'cantidad', 'monto', 'met_pago', 'fecha_creacion')
-    list_filter = ('met_pago',)
+    list_display = ('id', 'id_producto', 'id_cliente', 'cantidad', 'monto', 'fecha_creacion')
     date_hierarchy = 'fh_compra'
     ordering = ('-fh_compra',)
 
@@ -51,18 +48,18 @@ class ClienteAdmin(admin.ModelAdmin):
     search_fields = ('nombre', 'apellido', 'correo')
     date_hierarchy = 'f_creacion'
     ordering = ('-f_creacion',)
-    readonly_fields = ('f_actualizacion',)
+    readonly_fields = ('f_actualizacion', 'minutos_favor')
 
     # Formateo de las fechas
     def fecha_creacion(self, obj):
-        return obj.f_creacion.strftime('%Y-%m-%d')
+        return obj.f_creacion.strftime('%d/%m/%Y')
 
 @admin.register(Consola)
 class ConsolaAdmin(admin.ModelAdmin):
     list_display = ('numero', 'cant_controles', 'serial', 'fecha_actualizacion')
     search_fields = ('numero',)
     ordering = ('numero',)
-    readonly_fields = ('f_actualizacion',)
+    readonly_fields = ('f_actualizacion','ocupada')
 
     # Ajustar el articulo del mensaje del administardor
     def message_user(self, request, message, level=messages.SUCCESS, extra_tags='', fail_silently=False):
@@ -75,7 +72,7 @@ class ConsolaAdmin(admin.ModelAdmin):
     # Formateo de las fechas
     def fecha_actualizacion(self, obj):
         if obj.f_actualizacion:
-            return obj.f_actualizacion.strftime('%Y-%m-%d')
+            return obj.f_actualizacion.strftime('%d/%m/%Y')
         return ""
 
 
@@ -88,12 +85,11 @@ class JuegoAdmin(admin.ModelAdmin):
 
     # Formateo de las fechas
     def fecha_compra(self, obj):
-        return obj.f_compra.strftime('%Y-%m-%d')
+        return obj.f_compra.strftime('%d/%m/%Y')
 
 @admin.register(Sesion)
 class SesionAdmin(admin.ModelAdmin):
     list_display = ('id', 'hora_inicio', 'hora_final', 'id_cliente', 'id_consola')
-    list_filter = ('met_pago',)
     time_hierarchy = 'h_inicio'
     ordering = ('-f_sesion','-h_inicio',)
     readonly_fields = ('h_final',)

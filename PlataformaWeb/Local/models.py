@@ -1,18 +1,19 @@
 from django.db import models
 from django.core.validators import MinValueValidator
 from BetoGame.enums import MetodoPago
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 
 """
     Modelo de Cliente
-    #* ci: numerico(10)
+    #* ci: numerico(8)
     * nombre: varchar(30)
     * apellido: varchar(30)
-    * genero: varchar(10) (Check)
+    * genero: varchar(1) (Check)
     * f_nacimiento: date(YYYY-MM-DD)
-    * ubicacion: varchar(100)
-    * telefono: varchar(15)
+    * ubicacion: varchar(50)
+    * telefono: varchar(11)
     * correo: varchar(50)
+    * minutos_favor: numerico(3)
     * f_creacion: date(YYYY-MM-DD)
     ° f_actualizacion: date(YYYY-MM-DD)
 """
@@ -22,14 +23,15 @@ class Cliente(models.Model):
     apellido = models.CharField(max_length=30, null=False)
     
     GENEROS = [
-        ('masculino', 'Masculino'),
-        ('femenino', 'Femenino')
+        ('M', 'Masculino'),
+        ('F', 'Femenino')
     ]
-    genero = models.CharField(max_length=10, choices=GENEROS, null=False)
+    genero = models.CharField(max_length=1, choices=GENEROS, null=False)
     f_nacimiento = models.DateField(null=False)
-    ubicacion = models.CharField(max_length=100, null=False)
-    telefono = models.CharField(max_length=15, null=False)
+    ubicacion = models.CharField(max_length=50, null=False)
+    telefono = models.CharField(max_length=11, null=False)
     correo = models.EmailField(max_length=50, null=False, unique=True)
+    minutos_favor = models.PositiveIntegerField(null=False, validators=[MinValueValidator(0)], blank=True, default=0)
     f_creacion = models.DateField(auto_now_add=True, null=False)
     f_actualizacion = models.DateField(null=True, blank=True)
 
@@ -40,7 +42,7 @@ class Cliente(models.Model):
 
     # Actualizar la fecha de actualización al día actual
     def save(self, *args, **kwargs):
-        self.f_actualizacion = date.today()
+        self.f_actualizacion = timezone.now()
         super().save(*args, **kwargs)
 
     def __str__(self) -> str:
@@ -49,21 +51,19 @@ class Cliente(models.Model):
 """
     Modelo de Compra
     #* id: numerico(5)
-    * id_producto: numerico(5)
-    * id_cliente: numerico(10)
-    * met_pago: varchar(15) (Check)
-    * fh_compra: datetime(YYYY-MM-DDTHH:MM:SS) 
-    * cantidad: numerico(5)
-    * monto: numerico(8,2)
+    * id_producto: numerico(3)
+    * id_cliente: numerico(8)
+    * fh_compra: datetime(YYYY-MM-DD HH:MM:SS) 
+    * cantidad: numerico(2)
+    * monto: numerico(5,2)
 """
 class Compra(models.Model):
     id = models.AutoField(primary_key=True)
     id_producto = models.ForeignKey('Inventario.Producto', on_delete=models.CASCADE)
     id_cliente = models.ForeignKey('Cliente', on_delete=models.CASCADE)
-    met_pago = models.CharField(max_length=15, choices=MetodoPago.choices, null=False)
     fh_compra = models.DateTimeField(auto_now_add=True, null=False)
     cantidad = models.IntegerField(null=False, validators=[MinValueValidator(0)])
-    monto = models.DecimalField(max_digits=8, decimal_places=2, null=False, validators=[MinValueValidator(0)])
+    monto = models.DecimalField(max_digits=5, decimal_places=2, null=False, validators=[MinValueValidator(0)])
 
     class Meta:
         ordering = ['-fh_compra']
@@ -78,11 +78,10 @@ class Compra(models.Model):
     #* id: numerico(5)
     * nombre: varchar(30)
     * f_compra: date(YYY-MM-DD)
-    * generos: varchar(50)
-    * precio_compra: date(YYYY-MM-DD)
+    * generos: varchar(10) (Check)
+    * tipo: varchar(7) (Check)
+    * precio_compra: numerico(5,2)
     * cantidad: numerico(2)
-    * tipo: varchar(20) (Check)
-    * empresa: varchar(50)
 """
 class Juego(models.Model):
     id = models.AutoField(primary_key=True)
@@ -98,8 +97,14 @@ class Juego(models.Model):
         ('estrategia', 'Estrategia'),
         ('otros', 'Otros'),
     ]
-    genero = models.CharField(max_length=20, choices=GENERO_JUEGO, null=False)
+    genero = models.CharField(max_length=10, choices=GENERO_JUEGO, null=False)
 
+    TIPO_JUEGO = [
+        ('fisico', 'Físico'),
+        ('digital', 'Digital')
+    ]
+    tipo = models.CharField(max_length=7, choices=TIPO_JUEGO, null=False)
+    
     class Meta:
         verbose_name = 'Juego'
         verbose_name_plural = 'Juegos'
@@ -110,14 +115,15 @@ class Juego(models.Model):
 """
     Modelo de Consola
     #* numero: numerico(2)
-    * cant_controles: numerico(2)
+    * cant_controles: numerico(1)
+    * ocupada: boolean
     ° serial: varchar(30)
 """
 class Consola(models.Model):
     numero = models.PositiveIntegerField(primary_key=True)
     cant_controles = models.PositiveIntegerField(null=False)
     serial = models.CharField(max_length=30, null=True, blank=True)
-    
+    ocupada = models.BooleanField(default=False)
     juegos_instalados = models.ManyToManyField('Juego')
     f_actualizacion = models.DateField(null=True, blank=True)
     
@@ -127,7 +133,7 @@ class Consola(models.Model):
     
     # Actualizar la fecha de actualización al día actual
     def save(self, *args, **kwargs):
-        self.f_actualizacion = date.today()
+        self.f_actualizacion = timezone.now()
         super().save(*args, **kwargs)
 
     def __str__(self) -> str:
@@ -136,25 +142,25 @@ class Consola(models.Model):
 """
     Modelo de Sesion
     *# id: nuemrico(5)
-    * fh_inicio: datetime(YYYY-MM-DDTHH:MM:SS) 
-    * fh_final: datetime(YYYY-MM-DDTHH:MM:SS) 
-    * id_cliente: numerico(10) (FK)
+    * h_inicio: time(HH:MM:SS) 
+    * h_final: time(HH:MM:SS) 
+    * f_sesion: date(YYYY-MM-DD)
+    * id_cliente: numerico(8) (FK)
     * id_consola: numerico(2) (FK)
-    * met_pago: varchar(15) (Check)
-    * cant_horas: numerico(1,5)
-    * cant_personas: numerico(2)
+    * cant_minutos: numerico(3)
+    * cant_personas: numerico(1)
+    ° minutos_regalo: numerico(2)
 """
 class Sesion(models.Model):
     id = models.AutoField(primary_key=True)
-    h_inicio = models.TimeField(null=False)
+    h_inicio = models.TimeField(auto_now_add=True, null=False)
     h_final = models.TimeField(null=False)
     f_sesion = models.DateTimeField(auto_now_add=True, null=False)
     id_cliente = models.ForeignKey('Cliente', on_delete=models.CASCADE)
     id_consola = models.ForeignKey('Consola', on_delete=models.CASCADE)
+    minutos_regalo = models.PositiveIntegerField(null=False, validators=[MinValueValidator(0)], blank=True)
     
-    met_pago = models.CharField(max_length=15, choices=MetodoPago.choices, null=False)
-    
-    cant_horas = models.DecimalField(max_digits=5, decimal_places=1, null=False, validators=[MinValueValidator(0)])
+    cant_minutos = models.PositiveIntegerField(null=False, validators=[MinValueValidator(0)])
     cant_personas = models.PositiveIntegerField(null=False, validators=[MinValueValidator(0)])
 
     class Meta:
@@ -162,8 +168,10 @@ class Sesion(models.Model):
         verbose_name_plural = 'Sesiones'
 
     def save(self, *args, **kwargs):
-        self.h_final = datetime.now().time()
+        minutos_juego = self.cant_minutos + self.minutos_regalo
+        self.h_final = datetime.now() + timedelta(minutes=minutos_juego)
         super().save(*args, **kwargs)
 
     def __str__(self) -> str:
         return f"Con inicio {self.h_inicio} hasta las {self.h_final}"
+
