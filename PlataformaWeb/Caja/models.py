@@ -9,7 +9,6 @@ from BetoGame.enums import MetodoPago
     * compras: numerico(5) (FK)
     * sesiones: numerico(5) (FK) 
     * monto_deberdolar: numerico(5, 2)
-    * monto_deberbs: numerico(7, 2)
     * monto_pagado: numerico(5, 2)
     * fh_creacion: datatime(YYYY-MM-DD HH:MM:SS)
     ° fh_creacion: datatime(YYYY-MM-DD HH:MM:SS)
@@ -18,7 +17,6 @@ class Cuenta(models.Model):
     id = models.AutoField(primary_key=True)
     id_cliente = models.ForeignKey('Local.Cliente', on_delete=models.CASCADE)
     monto_deberdolar = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
-    monto_deberbs = models.DecimalField(max_digits=7, decimal_places=2, default=0.0)
     monto_pagado = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
     fh_creacion = models.DateTimeField(auto_now_add=True, null=False)
     fh_pago = models.DateTimeField(null=True, blank=True, default=None)
@@ -39,7 +37,6 @@ class Cuenta(models.Model):
     * id_cuenta: numerico/(5)
     * met_pago: varchar(10) (Check)
     * montodolar: numerico(5,2)
-    * montobs: numerico(7,2)
     * fh_pago: datetime(YYYY-MM-DD HH:MM:SS)
 """
 class Pago(models.Model):
@@ -47,7 +44,6 @@ class Pago(models.Model):
     id_cuenta = models.ForeignKey('Cuenta', on_delete=models.CASCADE)
     met_pago = models.CharField(max_length=13, choices=MetodoPago.choices)
     montodolar = models.DecimalField(max_digits=5, decimal_places=2)
-    montobs = models.DecimalField(max_digits=7, decimal_places=2, default=0.0)
     fh_pago = models.DateTimeField(auto_now_add=True, null=False)
 
     class Meta:
@@ -121,6 +117,13 @@ class Variable(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
+
+    def convert(self):
+        if self.tipo_dato == 'Entero':
+            return int(self.valor)
+        elif self.tipo_dato == 'Decimal':
+            return float(self.valor)   
+        return self.valor
 
     def __str__(self):
         return f'Variable #{self.id} {self.nombre} con el valor {self.valor}'

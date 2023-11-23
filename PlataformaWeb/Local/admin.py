@@ -4,6 +4,16 @@ from Inventario.models import Producto
 from datetime import datetime, timedelta
 from django.contrib import messages
 from django.utils.html import format_html
+from .forms import SesionForm
+
+## ACCIONES PERSONALIZADAS
+def cerrarSesionJuego(modeladmin, request, queryset):
+    queryset.update(abierto=False)
+    for sesion in queryset:
+        consola = Consola.objects.get(numero=sesion.id_consola.numero)
+        consola.ocupada = False
+        consola.save()
+cerrarSesionJuego.short_description = "Cerrar Sesión de Juego"
 
 @admin.register(Compra)
 class CompraAdmin(admin.ModelAdmin):
@@ -49,7 +59,7 @@ class ClienteAdmin(admin.ModelAdmin):
     search_fields = ('nombre', 'apellido', 'correo')
     date_hierarchy = 'f_creacion'
     ordering = ('-f_creacion',)
-    readonly_fields = ('f_actualizacion', 'minutos_favor')
+    readonly_fields = ('f_actualizacion',)
 
     # Formateo de las fechas
     def fecha_creacion(self, obj):
@@ -57,7 +67,7 @@ class ClienteAdmin(admin.ModelAdmin):
 
 @admin.register(Consola)
 class ConsolaAdmin(admin.ModelAdmin):
-    list_display = ('numero', 'cant_controles', 'serial', 'fecha_actualizacion')
+    list_display = ('numero', 'cant_controles', 'serial', 'fecha_actualizacion', 'ocupada')
     search_fields = ('numero',)
     ordering = ('numero',)
     readonly_fields = ('f_actualizacion','ocupada')
@@ -90,10 +100,12 @@ class JuegoAdmin(admin.ModelAdmin):
 
 @admin.register(Sesion)
 class SesionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'hora_inicio', 'hora_final', 'id_cliente', 'id_consola')
+    list_display = ('id', 'cantidad_horas', 'hora_inicio', 'hora_final', 'id_cliente', 'id_consola', 'abierto')
     time_hierarchy = 'h_inicio'
     ordering = ('-f_sesion','-h_inicio',)
-    readonly_fields = ('h_final',)
+    readonly_fields = ('h_final','id_cuenta','abierto')
+    form = SesionForm
+    actions = [cerrarSesionJuego]
 
     # Ajustar el articulo del mensaje del administardor
     def message_user(self, request, message, level=messages.SUCCESS, extra_tags='', fail_silently=False):
@@ -109,6 +121,9 @@ class SesionAdmin(admin.ModelAdmin):
     
     def hora_final(self, obj):
         return obj.h_final.strftime("%I:%M:%S %p")
+    
+    # Campos extras
+    def cantidad_horas(self, obj):
+        return round((obj.minutos_regalo + obj.cant_minutos)/60, 2)
         
-
 

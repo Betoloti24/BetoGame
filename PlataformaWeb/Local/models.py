@@ -1,7 +1,16 @@
 from django.db import models
 from django.core.validators import MinValueValidator
+from django.forms import ValidationError
 from BetoGame.enums import MetodoPago
 from datetime import date, datetime, timedelta
+from Caja.models import Cuenta, Variable
+from decimal import Decimal
+
+## RESTRICCIONES DE VERIFICACION
+def consola_ocupada(value):
+    consola = Consola.objects.filter(numero=value).first()
+    if consola.ocupada:
+        raise ValidationError("La consola seleccionada está ocupada")
 
 """
     Modelo de Cliente
@@ -150,6 +159,7 @@ class Consola(models.Model):
     * id_consola: numerico(2) (FK)
     * cant_minutos: numerico(3)
     * cant_personas: numerico(1)
+    * abierto: boolean
     ° minutos_regalo: numerico(2)
 """
 class Sesion(models.Model):
@@ -158,9 +168,10 @@ class Sesion(models.Model):
     h_final = models.TimeField(null=False)
     f_sesion = models.DateTimeField(auto_now_add=True, null=False)
     id_cliente = models.ForeignKey('Cliente', on_delete=models.CASCADE)
-    id_consola = models.ForeignKey('Consola', on_delete=models.CASCADE)
+    id_consola = models.ForeignKey('Consola', on_delete=models.CASCADE, validators=[consola_ocupada])
     id_cuenta = models.ForeignKey('Caja.Cuenta', on_delete=models.CASCADE) 
     minutos_regalo = models.PositiveIntegerField(null=False, validators=[MinValueValidator(0)], blank=True, default=0)
+    abierto = models.BooleanField(default=True)
     
     cant_minutos = models.PositiveIntegerField(null=False, validators=[MinValueValidator(0)])
     cant_personas = models.PositiveIntegerField(null=False, validators=[MinValueValidator(0)])
@@ -170,10 +181,33 @@ class Sesion(models.Model):
         verbose_name_plural = 'Sesiones'
 
     def save(self, *args, **kwargs):
-        minutos_juego = self.cant_minutos + self.minutos_regalo
-        self.h_final = datetime.now() + timedelta(minutes=minutos_juego)
-        super().save(*args, **kwargs)
+        consola = Consola.objects.filter(numero=self.id_consola.numero).first()
+        if (not consola.ocupada):
+            # Asigno la hora de finalizacion
+            minutos_juego = self.cant_minutos + self.minutos_regalo
+            self.h_final = datetime.now() + timedelta(minutes=minutos_juego)
+
+            # Asigno la cuenta del cliente
+            cuenta_cliente = Cuenta.objects.filter(id_cliente=self.id_cliente, fh_pago=None).first()
+            if not cuenta_cliente:
+                nueva_cuenta_cliente = Cuenta(id_cliente=self.id_cliente)
+                nueva_cuenta_cliente.save()
+                cuenta_cliente = Cuenta.objects.filter(id_cliente=self.id_cliente, fh_pago=None).first()
+            
+            # Consultamos las variables de referencia
+            precio_hora = Variable.objects.filter(id=1).first().convert()
+            # Actualizamos los montos de la cuenta
+            monto_pagar_dolares = Decimal(str((minutos_juego/60)*precio_hora))
+            cuenta_cliente.monto_deberdolar += monto_pagar_dolares
+            cuenta_cliente.save()
+            self.id_cuenta = cuenta_cliente
+
+            # Actualizamos la ocupacion de la consola
+            consola.ocupada = True
+            consola.save()
+            super().save(*args, **kwargs)   
+        else:
+            raise ValidationError("La consola ya estaba ocupada")
 
     def __str__(self) -> str:
         return f"Con inicio {self.h_inicio} hasta las {self.h_final}"
-

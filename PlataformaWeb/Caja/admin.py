@@ -5,11 +5,11 @@ from .forms import PagoForm
 
 @admin.register(Cuenta)
 class CuentaAdmin(admin.ModelAdmin):
-    list_display = ['id', 'id_cliente', 'monto_deberdolar', 'monto_deberbs', 'monto_pagado', 'fecha_hora_creacion', 'fecha_hora_pago']
+    list_display = ['id', 'id_cliente', 'monto_deberdolar', 'monto_pagado', 'fecha_hora_creacion', 'fecha_hora_pago']
     search_fields = ['id', 'id_cliente__nombre', 'id_cliente__apellido']
     date_hierarchy = 'fh_creacion'
     ordering = ('-fh_creacion',)
-    readonly_fields = ('fh_creacion', 'fh_pago', 'monto_deberdolar', 'monto_deberbs', 'monto_pagado')
+    readonly_fields = ('fh_creacion', 'fh_pago', 'monto_deberdolar', 'monto_pagado')
 
     # Formateo de las fechas
     def fecha_hora_creacion(self, obj):
@@ -24,12 +24,12 @@ class CuentaAdmin(admin.ModelAdmin):
 
 @admin.register(Pago)
 class PagoAdmin(admin.ModelAdmin):
-    list_display = ['id', 'id_cuenta', 'met_pago', 'montodolar', 'montobs', 'fecha_hora_pago']
+    list_display = ['id', 'id_cuenta', 'met_pago', 'montodolar', 'fecha_hora_pago']
     list_filter = ('met_pago',)
     search_fields = ['id', 'id_cuenta__id']
     date_hierarchy = 'fh_pago'
     ordering = ('-fh_pago',)
-    readonly_fields = ('fh_pago', 'montobs')
+    readonly_fields = ('fh_pago',)
     form = PagoForm
 
     # Formateo de las fechas

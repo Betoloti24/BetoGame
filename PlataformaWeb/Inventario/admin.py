@@ -6,12 +6,12 @@ from .models import Producto, HistoricoPrecios, Entrada
 
 @admin.register(Producto)
 class ProductoAdmin(admin.ModelAdmin):
-    list_display = ('id', 'nombre', 'precio_venta', 'cant_invent', 'tipo_producto', 'fecha_creacion', 'fecha_actualizacion')
+    list_display = ('id', 'nombre', 'precio_venta', 'precio_compra', 'cant_invent', 'tipo_producto', 'fecha_creacion', 'fecha_actualizacion')
     list_filter = ('tipo_producto',)
     search_fields = ('nombre',)
     date_hierarchy = 'f_creacion'
     
-    readonly_fields = ('f_actualizacion',)
+    readonly_fields = ('f_actualizacion','precio_compra','cant_invent')
 
     # Formateo de las fechas
     def fecha_creacion(self, obj):

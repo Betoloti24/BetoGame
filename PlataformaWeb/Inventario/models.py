@@ -16,6 +16,7 @@ class Producto(models.Model):
     id = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=20, null=False)
     precio_venta = models.DecimalField(max_digits=4, decimal_places=2, null=False, validators=[MinValueValidator(0)])
+    precio_compra = models.DecimalField(max_digits=4, decimal_places=2, null=False, validators=[MinValueValidator(0)])
     cant_invent = models.IntegerField(null=False,  validators=[MinValueValidator(0)])
     
     TIPOS_PRODUCTO = [
@@ -37,6 +38,20 @@ class Producto(models.Model):
     def save(self, *args, **kwargs):
         # Actualizar la fecha de actualización al día actual
         self.f_actualizacion = timezone.now()
+        
+        ## CREAR REGISTRO DE PRECIO
+        reg_vigente = HistoricoPrecios.objects.filter(id_producto=self).first()
+        if (not reg_vigente or reg_vigente.precio != self.precio_venta):
+            # Verifica si ya hay un historico vigente y lo marca como no vigente
+            historico_vigente = HistoricoPrecios.objects.filter(id_producto=self, vigente=True).first()
+            if historico_vigente:
+                historico_vigente.vigente = False
+                historico_vigente.save()
+
+            # Crea un nuevo registro en el historico
+            nuevo_historico = HistoricoPrecios(id_producto=self, precio=self.precio_venta, vigente=True)
+            nuevo_historico.save()
+
         super().save(*args, **kwargs)
 
     def __str__(self) -> str:
