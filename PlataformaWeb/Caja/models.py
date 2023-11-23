@@ -17,8 +17,6 @@ from BetoGame.enums import MetodoPago
 class Cuenta(models.Model):
     id = models.AutoField(primary_key=True)
     id_cliente = models.ForeignKey('Local.Cliente', on_delete=models.CASCADE)
-    compras = models.ForeignKey('Local.Compra', on_delete=models.CASCADE, blank=True, null=True)
-    sesiones = models.ForeignKey('Local.Sesion', on_delete=models.CASCADE, blank=True, null=True)
     monto_deberdolar = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
     monto_deberbs = models.DecimalField(max_digits=7, decimal_places=2, default=0.0)
     monto_pagado = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
@@ -30,8 +28,6 @@ class Cuenta(models.Model):
         verbose_name_plural = 'Cuentas'
 
     def save(self, *args, **kwargs):
-        self.fh_creacion = datetime.now()
-        self.fh_creacion = self.fh_creacion - timedelta(hours=4)
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -59,8 +55,6 @@ class Pago(models.Model):
         verbose_name_plural = 'Pagos'
 
     def save(self, *args, **kwargs):
-        # Asignar los valores por defecto de los montos
-        self.fh_pago = self.fh_pago - timedelta(hours=4)
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -96,12 +90,10 @@ class Cierre(models.Model):
         verbose_name_plural = 'Cierres'
 
     def save(self, *args, **kwargs):
-        # Asignar los valores por defecto de los montos
-        self.fh_cierre = self.fh_cierre - timedelta(hours=4)
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f'Cierre #{self.id} a fecha de {self.fh_cierre}'
+        return f'Cierre #{self.id} a fecha de {self.fh_cierre.date()} {self.fh_cierre.time()}'
 
 """
     Modelo de Variables:
@@ -121,16 +113,13 @@ class Variable(models.Model):
         ('Texto', 'Texto')
     ]
     tipo_dato = models.CharField(max_length=10, choices=TIPO_DATO)
-    fh_actualizacion = models.DateTimeField()
+    fh_actualizacion = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name = 'Variable'
         verbose_name_plural = 'Variables'
 
     def save(self, *args, **kwargs):
-        # Asignar los valores por defecto de los montos
-        if self.fh_actualizacion is not null:
-            self.fh_actualizacion = self.fh_actualizacion - timedelta(hours=4)    
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -156,9 +145,6 @@ class HistoricoValores(models.Model):
         verbose_name_plural = 'Históricos de Valores'
 
     def save(self, *args, **kwargs):
-        # Asignar los valores por defecto de los montos
-        if self.fh_registro is not null:
-            self.fh_registro = self.fh_registro - timedelta(hours=4)    
         super().save(*args, **kwargs)
 
     def __str__(self):

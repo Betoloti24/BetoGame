@@ -42,7 +42,7 @@ class Cliente(models.Model):
 
     # Actualizar la fecha de actualización al día actual
     def save(self, *args, **kwargs):
-        self.f_actualizacion = timezone.now()
+        self.f_actualizacion = datetime.now()
         super().save(*args, **kwargs)
 
     def __str__(self) -> str:
@@ -61,6 +61,7 @@ class Compra(models.Model):
     id = models.AutoField(primary_key=True)
     id_producto = models.ForeignKey('Inventario.Producto', on_delete=models.CASCADE)
     id_cliente = models.ForeignKey('Cliente', on_delete=models.CASCADE)
+    id_cuenta = models.ForeignKey('Caja.Cuenta', on_delete=models.CASCADE) 
     fh_compra = models.DateTimeField(auto_now_add=True, null=False)
     cantidad = models.IntegerField(null=False, validators=[MinValueValidator(0)])
     monto = models.DecimalField(max_digits=5, decimal_places=2, null=False, validators=[MinValueValidator(0)])
@@ -122,9 +123,9 @@ class Juego(models.Model):
 class Consola(models.Model):
     numero = models.PositiveIntegerField(primary_key=True)
     cant_controles = models.PositiveIntegerField(null=False)
-    serial = models.CharField(max_length=30, null=True, blank=True)
     ocupada = models.BooleanField(default=False)
     juegos_instalados = models.ManyToManyField('Juego')
+    serial = models.CharField(max_length=30, null=True, blank=True)
     f_actualizacion = models.DateField(null=True, blank=True)
     
     class Meta:
@@ -133,7 +134,7 @@ class Consola(models.Model):
     
     # Actualizar la fecha de actualización al día actual
     def save(self, *args, **kwargs):
-        self.f_actualizacion = timezone.now()
+        self.f_actualizacion = datetime.now()
         super().save(*args, **kwargs)
 
     def __str__(self) -> str:
@@ -158,7 +159,8 @@ class Sesion(models.Model):
     f_sesion = models.DateTimeField(auto_now_add=True, null=False)
     id_cliente = models.ForeignKey('Cliente', on_delete=models.CASCADE)
     id_consola = models.ForeignKey('Consola', on_delete=models.CASCADE)
-    minutos_regalo = models.PositiveIntegerField(null=False, validators=[MinValueValidator(0)], blank=True)
+    id_cuenta = models.ForeignKey('Caja.Cuenta', on_delete=models.CASCADE) 
+    minutos_regalo = models.PositiveIntegerField(null=False, validators=[MinValueValidator(0)], blank=True, default=0)
     
     cant_minutos = models.PositiveIntegerField(null=False, validators=[MinValueValidator(0)])
     cant_personas = models.PositiveIntegerField(null=False, validators=[MinValueValidator(0)])

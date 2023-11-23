@@ -1,6 +1,7 @@
 from django.contrib import admin
 from datetime import timedelta, datetime
 from .models import Cuenta, Pago, Cierre, Variable, HistoricoValores
+from .forms import PagoForm
 
 @admin.register(Cuenta)
 class CuentaAdmin(admin.ModelAdmin):
@@ -12,11 +13,13 @@ class CuentaAdmin(admin.ModelAdmin):
 
     # Formateo de las fechas
     def fecha_hora_creacion(self, obj):
-        return obj.fh_creacion.strftime('%d/%m/%Y %I:%M:%S %p')
+        hora = obj.fh_creacion - timedelta(hours=4)
+        return hora.strftime('%d/%m/%Y %I:%M:%S %p')
     
     def fecha_hora_pago(self, obj):
         if obj.fh_pago:
-            return obj.fh_pago.strftime('%d/%m/%Y %I:%M:%S %p')
+            hora = obj.fh_pago - timedelta(hours=4)
+            return hora.strftime('%d/%m/%Y %I:%M:%S %p')
         return ""
 
 @admin.register(Pago)
@@ -27,10 +30,12 @@ class PagoAdmin(admin.ModelAdmin):
     date_hierarchy = 'fh_pago'
     ordering = ('-fh_pago',)
     readonly_fields = ('fh_pago', 'montobs')
+    form = PagoForm
 
     # Formateo de las fechas
     def fecha_hora_pago(self, obj):
-        return obj.fh_pago.strftime('%d/%m/%Y %I:%M:%S %p')
+        hora = obj.fh_pago - timedelta(hours=4)
+        return hora.strftime('%d/%m/%Y %I:%M:%S %p')
 
 @admin.register(Cierre)
 class CierreAdmin(admin.ModelAdmin):
@@ -42,7 +47,8 @@ class CierreAdmin(admin.ModelAdmin):
 
     # Formateo de las fechas
     def fecha_hora_cierre(self, obj):
-        return obj.fh_cierre.strftime('%d/%m/%Y %I:%M:%S %p')
+        hora = obj.fh_cierre - timedelta(hours=4)
+        return hora.strftime('%d/%m/%Y %I:%M:%S %p')
 
 @admin.register(Variable)
 class VariableAdmin(admin.ModelAdmin):
@@ -53,7 +59,8 @@ class VariableAdmin(admin.ModelAdmin):
     # Formateo de las fechas
     def fecha_hora_actualizacion(self, obj):
         if obj.fh_actualizacion:
-            return obj.fh_actualizacion.strftime('%d/%m/%Y %I:%M:%S %p')
+            hora = obj.fh_actualizacion - timedelta(hours=4)
+            return hora.strftime('%d/%m/%Y %I:%M:%S %p')
         return ""
 
 @admin.register(HistoricoValores)
@@ -64,4 +71,5 @@ class HistoricoValoresAdmin(admin.ModelAdmin):
 
     # Formateo de las fechas
     def fecha_hora_registro(self, obj):
-        return obj.fh_cierre.strftime('%d/%m/%Y %I:%M:%S %p')
+        hora = obj.fh_registro - timedelta(hours=4)
+        return hora.strftime('%d/%m/%Y %I:%M:%S %p')

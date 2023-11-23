@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     # Mis Aplicaciones
     "Caja",
     "Local",
-    "Inventario",
+    "Inventario"
 ]
 
 X_FRAME_OPTIONS = 'SAMEORIGIN'
@@ -80,7 +80,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "BetoGame.wsgi.application"
-
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases

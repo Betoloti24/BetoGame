@@ -1,13 +1,13 @@
 from django.contrib import admin 
 from .models import Compra, Cliente, Consola, Juego, Sesion
 from Inventario.models import Producto
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.contrib import messages
 from django.utils.html import format_html
 
 @admin.register(Compra)
 class CompraAdmin(admin.ModelAdmin):
-    list_display = ('id', 'id_producto', 'id_cliente', 'cantidad', 'monto', 'fecha_creacion')
+    list_display = ('id', 'id_producto', 'id_cliente', 'cantidad', 'monto', 'fecha_de_compra')
     date_hierarchy = 'fh_compra'
     ordering = ('-fh_compra',)
 
@@ -32,14 +32,15 @@ class CompraAdmin(admin.ModelAdmin):
     # Ajustar el articulo del mensaje del administardor
     def message_user(self, request, message, level=messages.SUCCESS, extra_tags='', fail_silently=False):
         # Personalizar el mensaje de éxito según el modelo
-        if 'Sesion' in message:
-            message = format_html("La Sesion '{}' se cambió correctamente.", message.split('</a>')[0].split('">')[-1])
+        if 'Compra' in message:
+            message = format_html("La Compra '{}' se cambió correctamente.", message.split('</a>')[0].split('">')[-1])
 
         super().message_user(request, message, level, extra_tags, fail_silently)
 
     # Formateo de las fechas
-    def fecha_creacion(self, obj):
-        return obj.fh_compra.strftime('%Y-%m-%d')
+    def fecha_de_compra(self, obj):
+        hora = obj.fh_compra - timedelta(hours=4)
+        return hora.strftime('%d/%m/%Y %I:%M:%S %p')
 
 @admin.register(Cliente)
 class ClienteAdmin(admin.ModelAdmin):
@@ -64,8 +65,8 @@ class ConsolaAdmin(admin.ModelAdmin):
     # Ajustar el articulo del mensaje del administardor
     def message_user(self, request, message, level=messages.SUCCESS, extra_tags='', fail_silently=False):
         # Personalizar el mensaje de éxito según el modelo
-        if 'Sesion' in message:
-            message = format_html("La Sesion '{}' se cambió correctamente.", message.split('</a>')[0].split('">')[-1])
+        if 'Consola' in message:
+            message = format_html("La Consola '{}' se cambió correctamente.", message.split('</a>')[0].split('">')[-1])
 
         super().message_user(request, message, level, extra_tags, fail_silently)
 
