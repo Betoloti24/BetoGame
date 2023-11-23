@@ -1,3 +1,4 @@
+from collections.abc import Iterable
 from django.db import models
 from django.core.validators import MinValueValidator
 from django.utils import timezone
@@ -15,7 +16,7 @@ from datetime import date
 class Producto(models.Model):
     id = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=20, null=False)
-    precio_venta = models.DecimalField(max_digits=4, decimal_places=2, null=False, validators=[MinValueValidator(0)])
+    precio_venta = models.DecimalField(max_digits=4, decimal_places=2, null=False, validators=[MinValueValidator(1)])
     precio_compra = models.DecimalField(max_digits=4, decimal_places=2, null=False, validators=[MinValueValidator(0)])
     cant_invent = models.IntegerField(null=False,  validators=[MinValueValidator(0)])
     
@@ -68,7 +69,7 @@ class Producto(models.Model):
 class HistoricoPrecios(models.Model):
     id = models.AutoField(primary_key=True)
     id_producto = models.ForeignKey('Producto', on_delete=models.CASCADE)
-    precio = models.DecimalField(max_digits=4, decimal_places=2, null=False, validators=[MinValueValidator(0)])
+    precio = models.DecimalField(max_digits=4, decimal_places=2, null=False, validators=[MinValueValidator(1)])
     fh_registro = models.DateTimeField(auto_now_add=True, null=False)
     vigente = models.BooleanField(default=True)
 
@@ -92,7 +93,7 @@ class HistoricoPrecios(models.Model):
 """
 class Entrada(models.Model):
     id = models.AutoField(primary_key=True)
-    costo = models.DecimalField(max_digits=8, decimal_places=2, null=False, validators=[MinValueValidator(0)])
+    costo = models.DecimalField(max_digits=8, decimal_places=2, null=False, validators=[MinValueValidator(1)])
     id_producto = models.ForeignKey('Producto', on_delete=models.CASCADE)
     fh_registro = models.DateTimeField(auto_now_add=True, null=False)
     
@@ -101,12 +102,23 @@ class Entrada(models.Model):
         ('produccion', 'Producido'),
     ]
     tipo_entrada = models.CharField(max_length=10, choices=TIPOS_ENTRADA, null=False)
-    cant_ingresada = models.IntegerField(null=False,  validators=[MinValueValidator(0)])
+    cant_ingresada = models.IntegerField(null=False,  validators=[MinValueValidator(1)])
     proveedor = models.CharField(max_length=20, null=True, blank=True)
+    
     class Meta:
         ordering = ['-fh_registro']
         verbose_name = 'Entrada'
         verbose_name_plural = 'Entradas'
+
+    def save(self, *args, **kwargs) -> None:
+        ## Aumentamos la existencia del producto
+        producto = Producto.objects.get(id=self.id_producto.id)
+        producto.cant_invent += self.cant_ingresada
+
+        ## Actualizamos el precio de compra
+        producto.precio_compra = self.costo
+        producto.save()
+        super().save(self, *args, **kwargs)
 
     def __str__(self) -> str:
         return f"{self.cant_ingresada} unidades de {self.id_producto.nombre}"

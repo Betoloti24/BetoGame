@@ -47,8 +47,8 @@ class CierreAdmin(admin.ModelAdmin):
 
     # Formateo de las fechas
     def fecha_hora_cierre(self, obj):
-        hora = obj.fh_cierre - timedelta(hours=4)
-        return hora.strftime('%d/%m/%Y %I:%M:%S %p')
+        hora = obj.fh_cierre
+        return hora.strftime('%d/%m/%Y')
 
 @admin.register(Variable)
 class VariableAdmin(admin.ModelAdmin):

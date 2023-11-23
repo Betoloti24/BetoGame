@@ -3,6 +3,7 @@ from .models import Producto
 from django.contrib import messages
 from django.utils.html import format_html
 from .models import Producto, HistoricoPrecios, Entrada
+from .form import EntradaForm
 
 @admin.register(Producto)
 class ProductoAdmin(admin.ModelAdmin):
@@ -40,6 +41,7 @@ class EntradaAdmin(admin.ModelAdmin):
     list_filter = ('tipo_entrada',)
     date_hierarchy = 'fh_registro'
     ordering = ('-fh_registro',)
+    form = EntradaForm
 
     # Ajustar el articulo del mensaje del administardor
     def message_user(self, request, message, level=messages.SUCCESS, extra_tags='', fail_silently=False):
@@ -52,5 +54,12 @@ class EntradaAdmin(admin.ModelAdmin):
     # Formateo de las fechas
     def fecha_creacion(self, obj):
         return obj.fh_registro.strftime('%Y-%m-%d')
-
-
+    
+    # Control de errores
+    def save_model(self, request, obj, form, change):
+        producto = Producto.objects.get(id=obj.id_producto.id)
+        # Verificamos si el precio de compra es mayor al de venta
+        if (obj.costo >= producto.precio_venta):
+            self.message_user(request, f"La entrada generada tuvo un coste superior al precio de venta del producto {producto.nombre}. Actualice el precio de venta del producto.", level='warning')
+        super().save_model(request, obj, form, change)
+        

@@ -72,8 +72,8 @@ class Compra(models.Model):
     id_cliente = models.ForeignKey('Cliente', on_delete=models.CASCADE)
     id_cuenta = models.ForeignKey('Caja.Cuenta', on_delete=models.CASCADE) 
     fh_compra = models.DateTimeField(auto_now_add=True, null=False)
-    cantidad = models.IntegerField(null=False, validators=[MinValueValidator(0)])
-    monto = models.DecimalField(max_digits=5, decimal_places=2, null=False, validators=[MinValueValidator(0)])
+    cantidad = models.IntegerField(null=False, validators=[MinValueValidator(1)])
+    monto = models.DecimalField(max_digits=5, decimal_places=2, null=False, validators=[MinValueValidator(1)])
 
     class Meta:
         ordering = ['-fh_compra']
@@ -97,7 +97,7 @@ class Juego(models.Model):
     id = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=30, null=False)
     f_compra = models.DateField(auto_now_add=True, null=False)
-    precio_compra = models.DecimalField(max_digits=8, decimal_places=2, null=False, validators=[MinValueValidator(0)])
+    precio_compra = models.DecimalField(max_digits=8, decimal_places=2, null=False, validators=[MinValueValidator(1)])
     cantidad = models.PositiveIntegerField(null=False)
     
     GENERO_JUEGO = [
@@ -173,8 +173,8 @@ class Sesion(models.Model):
     minutos_regalo = models.PositiveIntegerField(null=False, validators=[MinValueValidator(0)], blank=True, default=0)
     abierto = models.BooleanField(default=True)
     
-    cant_minutos = models.PositiveIntegerField(null=False, validators=[MinValueValidator(0)])
-    cant_personas = models.PositiveIntegerField(null=False, validators=[MinValueValidator(0)])
+    cant_minutos = models.PositiveIntegerField(null=False, validators=[MinValueValidator(1)])
+    cant_personas = models.PositiveIntegerField(null=False, validators=[MinValueValidator(1)])
 
     class Meta:
         verbose_name = 'Sesion'

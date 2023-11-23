@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 from datetime import date, datetime, timedelta
 from BetoGame.enums import MetodoPago
 
@@ -79,7 +80,7 @@ class Cierre(models.Model):
     total_jugadores = models.DecimalField(max_digits=2, decimal_places=0, default=0.0)
     totalbs_costoent = models.DecimalField(max_digits=8, decimal_places=2, default=0.0)
     totaldolar_costoent = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
-    fh_cierre = models.DateTimeField()
+    fh_cierre = models.DateField()
 
     class Meta:
         verbose_name = 'Cierre'
@@ -116,6 +117,22 @@ class Variable(models.Model):
         verbose_name_plural = 'Variables'
 
     def save(self, *args, **kwargs):
+        # Actualizar la fecha de actualización al día actual
+        self.f_actualizacion = timezone.now()
+        # Generamos un historico de valores si se actualiza el registro
+        
+        ## CREAR REGISTRO DE VALOR
+        reg_vigente = HistoricoValores.objects.filter(id_variable=self).first()
+        if (not reg_vigente or reg_vigente.valor != self.valor):
+            # Verifica si ya hay un historico vigente y lo marca como no vigente
+            historico_vigente = HistoricoValores.objects.filter(id_variable=self, vigente=True).first()
+            if historico_vigente:
+                historico_vigente.vigente = False
+                historico_vigente.save()
+
+            # Crea un nuevo registro en el historico
+            nuevo_historico = HistoricoValores(id_variable=self, valor=self.valor, vigente=True)
+            nuevo_historico.save()
         super().save(*args, **kwargs)
 
     def convert(self):
