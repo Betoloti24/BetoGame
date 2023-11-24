@@ -1,5 +1,5 @@
 from django.contrib import admin 
-from .models import Compra, Cliente, Consola, Juego, Sesion
+from .models import Venta, Cliente, Consola, Juego, Sesion
 from Inventario.models import Producto
 from datetime import datetime, timedelta
 from django.contrib import messages
@@ -15,11 +15,11 @@ def cerrarSesionJuego(modeladmin, request, queryset):
         consola.save()
 cerrarSesionJuego.short_description = "Cerrar Sesión de Juego"
 
-@admin.register(Compra)
-class CompraAdmin(admin.ModelAdmin):
-    list_display = ('id', 'id_producto', 'id_cliente', 'cantidad', 'monto', 'fecha_de_compra')
-    date_hierarchy = 'fh_compra'
-    ordering = ('-fh_compra',)
+@admin.register(Venta)
+class VentaAdmin(admin.ModelAdmin):
+    list_display = ('id', 'id_cliente', 'cantidad', 'monto', 'fecha_de_compra')
+    date_hierarchy = 'fh_venta'
+    ordering = ('-fh_venta',)
 
     # # Actualizar cantidad en inventario del producto
     # def save_model(self, request, obj, form, change):
@@ -42,14 +42,14 @@ class CompraAdmin(admin.ModelAdmin):
     # Ajustar el articulo del mensaje del administardor
     def message_user(self, request, message, level=messages.SUCCESS, extra_tags='', fail_silently=False):
         # Personalizar el mensaje de éxito según el modelo
-        if 'Compra' in message:
+        if 'Venta' in message:
             message = format_html("La Compra '{}' se cambió correctamente.", message.split('</a>')[0].split('">')[-1])
 
         super().message_user(request, message, level, extra_tags, fail_silently)
 
     # Formateo de las fechas
     def fecha_de_compra(self, obj):
-        hora = obj.fh_compra - timedelta(hours=4)
+        hora = obj.fh_venta - timedelta(hours=4)
         return hora.strftime('%d/%m/%Y %I:%M:%S %p')
 
 @admin.register(Cliente)

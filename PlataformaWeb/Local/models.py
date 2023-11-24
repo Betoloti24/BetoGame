@@ -66,19 +66,19 @@ class Cliente(models.Model):
     * cantidad: numerico(2)
     * monto: numerico(5,2)
 """
-class Compra(models.Model):
+class Venta(models.Model):
     id = models.AutoField(primary_key=True)
-    id_producto = models.ForeignKey('Inventario.Producto', on_delete=models.CASCADE)
+    productos = models.ManyToManyField('Inventario.Producto')
     id_cliente = models.ForeignKey('Cliente', on_delete=models.CASCADE)
     id_cuenta = models.ForeignKey('Caja.Cuenta', on_delete=models.CASCADE) 
-    fh_compra = models.DateTimeField(auto_now_add=True, null=False)
+    fh_venta = models.DateTimeField(auto_now_add=True, null=False)
     cantidad = models.IntegerField(null=False, validators=[MinValueValidator(1)])
     monto = models.DecimalField(max_digits=5, decimal_places=2, null=False, validators=[MinValueValidator(1)])
 
     class Meta:
-        ordering = ['-fh_compra']
-        verbose_name = 'Compra'
-        verbose_name_plural = 'Compras'
+        ordering = ['-fh_venta']
+        verbose_name = 'Venta'
+        verbose_name_plural = 'Ventas'
     
     def __str__(self) -> str:
         return f"{self.cantidad} unidades de {self.id_producto.nombre}"

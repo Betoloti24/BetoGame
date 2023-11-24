@@ -41,7 +41,7 @@ class Producto(models.Model):
         self.f_actualizacion = timezone.now()
         
         ## CREAR REGISTRO DE PRECIO
-        reg_vigente = HistoricoPrecios.objects.filter(id_producto=self).first()
+        reg_vigente = HistoricoPrecios.objects.filter(id_producto=self, vigente=True).first()
         if (not reg_vigente or reg_vigente.precio != self.precio_venta):
             # Verifica si ya hay un historico vigente y lo marca como no vigente
             historico_vigente = HistoricoPrecios.objects.filter(id_producto=self, vigente=True).first()
