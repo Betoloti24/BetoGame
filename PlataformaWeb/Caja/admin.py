@@ -70,7 +70,7 @@ class VariableAdmin(admin.ModelAdmin):
 
 @admin.register(HistoricoValores)
 class HistoricoValoresAdmin(admin.ModelAdmin):
-    list_display = ['id', 'id_variable', 'valor']
+    list_display = ['id', 'id_variable', 'valor', 'fecha_hora_registro']
     search_fields = ['id', 'id_variable__nombre']
     ordering = ('-fh_registro',)
 
