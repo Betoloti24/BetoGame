@@ -10,4 +10,5 @@ class PagoForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         # Filtra las opciones del campo de cuenta para mostrar solo cuentas no pagadas
         cuentas_no_pagadas = Cuenta.objects.filter(fh_pago=None)
-        self.fields['id_cuenta'].queryset = cuentas_no_pagadas
+        if self.fields:
+            self.fields['id_cuenta'].queryset = cuentas_no_pagadas

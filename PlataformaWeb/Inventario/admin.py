@@ -37,17 +37,18 @@ class HistoricoPreciosAdmin(admin.ModelAdmin):
 
 @admin.register(Entrada)
 class EntradaAdmin(admin.ModelAdmin):
-    list_display = ('id', 'id_producto', 'costo', 'tipo_entrada', 'cant_ingresada', 'fecha_creacion')
+    list_display = ('id', 'id_producto', 'costo_punidad', 'cant_ingresada', 'costo_mercancia', 'costo_envio', 'tipo_entrada', 'fecha_creacion')
     list_filter = ('tipo_entrada',)
     date_hierarchy = 'fh_registro'
     ordering = ('-fh_registro',)
+    readonly_fields = ('costo_punidad',)
     form = EntradaForm
 
     # Ajustar el articulo del mensaje del administardor
     def message_user(self, request, message, level=messages.SUCCESS, extra_tags='', fail_silently=False):
         # Personalizar el mensaje de éxito según el modelo
         if 'Sesion' in message:
-            message = format_html("La Sesion '{}' se cambió correctamente.", message.split('</a>')[0].split('">')[-1])
+            message = format_html("La Entrada '{}' se cambió correctamente.", message.split('</a>')[0].split('">')[-1])
 
         super().message_user(request, message, level, extra_tags, fail_silently)
 
@@ -58,8 +59,8 @@ class EntradaAdmin(admin.ModelAdmin):
     # Control de errores
     def save_model(self, request, obj, form, change):
         producto = Producto.objects.get(id=obj.id_producto.id)
-        # Verificamos si el precio de compra es mayor al de venta
-        if (obj.costo >= producto.precio_venta):
-            self.message_user(request, f"La entrada generada tuvo un coste superior al precio de venta del producto {producto.nombre}. Actualice el precio de venta del producto.", level='warning')
         super().save_model(request, obj, form, change)
+        # Verificamos si el precio de compra es mayor al de venta
+        if (obj.costo_punidad >= producto.precio_venta):
+            self.message_user(request, f"La entrada generada tuvo un coste por unidad superior al precio de venta del producto {producto.nombre}. Actualice el precio de venta del producto.", level='warning')
         

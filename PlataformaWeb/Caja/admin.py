@@ -5,11 +5,11 @@ from .forms import PagoForm
 
 @admin.register(Cuenta)
 class CuentaAdmin(admin.ModelAdmin):
-    list_display = ['id', 'id_cliente', 'monto_deberdolar', 'monto_pagado', 'fecha_hora_creacion', 'fecha_hora_pago']
+    list_display = ['id', 'id_cliente', 'monto_deberdolar', 'monto_pagado', 'fecha_hora_creacion', 'fecha_hora_pago', 'fecha_hora_ultimo_pago']
     search_fields = ['id', 'id_cliente__nombre', 'id_cliente__apellido']
     date_hierarchy = 'fh_creacion'
     ordering = ('-fh_creacion',)
-    readonly_fields = ('fh_creacion', 'fh_pago', 'monto_deberdolar', 'monto_pagado')
+    readonly_fields = ('fh_creacion', 'fh_pago', 'monto_deberdolar', 'monto_pagado', 'fh_ultimo_pago')
 
     # Formateo de las fechas
     def fecha_hora_creacion(self, obj):
@@ -19,6 +19,12 @@ class CuentaAdmin(admin.ModelAdmin):
     def fecha_hora_pago(self, obj):
         if obj.fh_pago:
             hora = obj.fh_pago - timedelta(hours=4)
+            return hora.strftime('%d/%m/%Y %I:%M:%S %p')
+        return ""
+
+    def fecha_hora_ultimo_pago(self, obj):
+        if obj.fh_ultimo_pago:
+            hora = obj.fh_ultimo_pago - timedelta(hours=4)
             return hora.strftime('%d/%m/%Y %I:%M:%S %p')
         return ""
 
@@ -39,8 +45,7 @@ class PagoAdmin(admin.ModelAdmin):
 
 @admin.register(Cierre)
 class CierreAdmin(admin.ModelAdmin):
-    list_display = ['id', 'fecha_hora_cierre', 'totalbs_ingreso', 'totaldolar_ingreso', 'totalbs_fianza', 'totaldolar_fianza', 'total_horas', 'total_jugadores', 'totalbs_costoent', 'totaldolar_costoent']
-    search_fields = ['id']
+    list_display = ['fecha_hora_cierre', 'totalbs_ingreso', 'totaldolar_ingreso', 'totalbs_fianza', 'totaldolar_fianza', 'total_horas', 'total_jugadores', 'totalbs_costoent', 'totaldolar_costoent']
     date_hierarchy = 'fh_cierre'
     ordering = ('-fh_cierre',)
     readonly_fields = ('totalbs_ingreso', 'totaldolar_ingreso', 'totalbs_fianza', 'totaldolar_fianza', 'total_horas', 'total_jugadores', 'totalbs_costoent', 'totaldolar_costoent')

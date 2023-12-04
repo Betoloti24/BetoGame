@@ -3,7 +3,6 @@ from django.core.validators import MinValueValidator
 from django.forms import ValidationError
 from BetoGame.enums import MetodoPago
 from datetime import date, datetime, timedelta
-from Caja.models import Cuenta, Variable
 from decimal import Decimal
 
 ## RESTRICCIONES DE VERIFICACION
@@ -90,6 +89,8 @@ class Venta(models.Model):
 
     # guardar venta
     def save(self, *args, **kwargs):
+        from Caja.models import Cuenta, Variable
+        
         ## DISMINUIR EXISTENCIA
         producto = self.id_producto
         cantidad_compra = self.cantidad
@@ -213,6 +214,7 @@ class Sesion(models.Model):
         verbose_name_plural = 'Sesiones'
 
     def save(self, *args, **kwargs):
+        from Caja.models import Cuenta, Variable
         consola = Consola.objects.filter(numero=self.id_consola.numero).first()
         
         # Asigno la hora de finalizacion
@@ -229,7 +231,7 @@ class Sesion(models.Model):
         # Consultamos las variables de referencia
         precio_hora = Variable.objects.filter(id=1).first().convert()
         # Actualizamos los montos de la cuenta
-        monto_pagar_dolares = Decimal(str((minutos_juego/60)*precio_hora))
+        monto_pagar_dolares = Decimal(str((self.cant_minutos/60)*precio_hora))
         cuenta_cliente.monto_deberdolar += monto_pagar_dolares
         cuenta_cliente.save()
         self.id_cuenta = cuenta_cliente

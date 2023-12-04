@@ -46,13 +46,17 @@ class Producto(models.Model):
         ## CREAR REGISTRO DE PRECIO
         # Verifica si ya hay un historico vigente y lo marca como no vigente
         historico_vigente = HistoricoPrecios.objects.filter(id_producto=self, vigente=True).first()
-        if historico_vigente:
+        if historico_vigente and self.precio_venta != historico_vigente.precio:
             historico_vigente.vigente = False
             historico_vigente.save()
-
-        # Crea un nuevo registro en el historico
-        nuevo_historico = HistoricoPrecios(id_producto=self, precio=self.precio_venta, vigente=True)
-        nuevo_historico.save()
+        
+            # Crea un nuevo registro en el historico
+            nuevo_historico = HistoricoPrecios(id_producto=self, precio=self.precio_venta, vigente=True)
+            nuevo_historico.save()
+        elif not historico_vigente:
+            # Crea un nuevo registro en el historico
+            nuevo_historico = HistoricoPrecios(id_producto=self, precio=self.precio_venta, vigente=True)
+            nuevo_historico.save()
 
     def __str__(self) -> str:
         return f"{self.nombre}"
@@ -83,7 +87,9 @@ class HistoricoPrecios(models.Model):
 """
     Modelo de Entrada
     #* id: numerico(5)
-    * costo: numerico(8,2)
+    * costo_punidad: numerico(5,2)
+    * costo_mercancia: numerico(8,2)
+    * costo_envio: numerico(5,2)
     * cant_ingresada: numerico(5)
     * id_producto: numerico(5)
     * fh_registro: datetime(YYYY-MM-DDTHH:MM:SS) 
@@ -92,9 +98,12 @@ class HistoricoPrecios(models.Model):
 """
 class Entrada(models.Model):
     id = models.AutoField(primary_key=True)
-    costo = models.DecimalField(max_digits=8, decimal_places=2, null=False, validators=[MinValueValidator(1)])
+    costo_punidad = models.DecimalField(max_digits=5, decimal_places=2, null=False, validators=[MinValueValidator(1)])
+    costo_mercancia = models.DecimalField(max_digits=8, decimal_places=2, null=False, validators=[MinValueValidator(1)])
+    costo_envio = models.DecimalField(max_digits=5, decimal_places=2, null=False, default=0, validators=[MinValueValidator(1)])
     id_producto = models.ForeignKey('Producto', on_delete=models.CASCADE)
     fh_registro = models.DateTimeField(auto_now_add=True, null=False)
+    
     
     TIPOS_ENTRADA = [
         ('compra', 'Comprado'),
@@ -114,8 +123,12 @@ class Entrada(models.Model):
         producto = Producto.objects.get(id=self.id_producto.id)
         producto.cant_invent += self.cant_ingresada
 
+        ## Calculamos el precio por unidad
+        costo_compra = (self.costo_envio + self.costo_mercancia)/self.cant_ingresada
+        self.costo_punidad = costo_compra
+
         ## Actualizamos el precio de compra
-        producto.precio_compra = self.costo
+        producto.precio_compra = self.costo_punidad
         producto.save()
         super().save(self, *args, **kwargs)
 
