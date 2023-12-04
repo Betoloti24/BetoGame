@@ -1,7 +1,13 @@
 from django.db import models
 from django.utils import timezone
+from django.forms import ValidationError
 from datetime import date, datetime, timedelta
 from BetoGame.enums import MetodoPago
+
+## REGLAS DE VERIFICACION
+def monto_pagar(cuenta, monto):
+    if cuenta.monto_deberdolar < monto:
+        raise ValidationError("El monto a pagar excede la deuda")
 
 """
     Modelo de Cuenta:
@@ -51,7 +57,21 @@ class Pago(models.Model):
         verbose_name = 'Pago'
         verbose_name_plural = 'Pagos'
 
+    # validaciones
+    def clean(self):
+        monto_pagar(self.id_cuenta, self.montodolar)
+        super().clean()
+
+    # guardamos
     def save(self, *args, **kwargs):
+        # actualizamos la deuda y lo pagado de la cuenta
+        cuenta = Cuenta.objects.filter(id=self.id_cuenta.id).first()
+        cuenta.monto_deberdolar -= self.montodolar
+        cuenta.monto_pagado += self.montodolar
+        if (cuenta.monto_deberdolar == 0):
+            cuenta.fh_pago = timezone.now()
+        cuenta.save()
+
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -71,7 +91,6 @@ class Pago(models.Model):
     * fh_cierre: datetime(YYYY-MM-DD HH:MM:SS) 
 """
 class Cierre(models.Model):
-    id = models.BigAutoField(primary_key=True)
     totalbs_ingreso = models.DecimalField(max_digits=8, decimal_places=2, default=0.0)
     totaldolar_ingreso = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
     totalbs_fianza = models.DecimalField(max_digits=8, decimal_places=2, default=0.0)
@@ -80,7 +99,7 @@ class Cierre(models.Model):
     total_jugadores = models.DecimalField(max_digits=2, decimal_places=0, default=0.0)
     totalbs_costoent = models.DecimalField(max_digits=8, decimal_places=2, default=0.0)
     totaldolar_costoent = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
-    fh_cierre = models.DateField()
+    fh_cierre = models.DateField(primary_key=True)
 
     class Meta:
         verbose_name = 'Cierre'
@@ -90,7 +109,7 @@ class Cierre(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f'Cierre #{self.id} a fecha de {self.fh_cierre.date()} {self.fh_cierre.time()}'
+        return f'A fecha de {self.fh_cierre}'
 
 """
     Modelo de Variables:
@@ -119,9 +138,11 @@ class Variable(models.Model):
     def save(self, *args, **kwargs):
         # Actualizar la fecha de actualización al día actual
         self.f_actualizacion = timezone.now()
-        # Generamos un historico de valores si se actualiza el registro
         
-        ## CREAR REGISTRO DE VALOR
+        # Guardamos
+        super().save(*args, **kwargs)
+        
+        # Generamos un historico de valores si se actualiza el registro
         reg_vigente = HistoricoValores.objects.filter(id_variable=self).first()
         if (not reg_vigente or reg_vigente.valor != self.valor):
             # Verifica si ya hay un historico vigente y lo marca como no vigente
@@ -133,7 +154,6 @@ class Variable(models.Model):
             # Crea un nuevo registro en el historico
             nuevo_historico = HistoricoValores(id_variable=self, valor=self.valor, vigente=True)
             nuevo_historico.save()
-        super().save(*args, **kwargs)
 
     def convert(self):
         if self.tipo_dato == 'Entero':

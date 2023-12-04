@@ -45,10 +45,10 @@ JAZZMIN_SETTINGS = {
         # # model admin to link to (Permissions checked against model)
         # {"model": "auth.User"},
 
-        # # App with dropdown menu to all its models pages (Permissions checked against models)
-        # {"app": "Inventario"},
-        # {"app": "Local"},
-        # {"app": "Caja"},
+        # App with dropdown menu to all its models pages (Permissions checked against models)
+        {"app": "Inventario"},
+        {"app": "Local"},
+        {"app": "Caja"},
     ],
 
     #############
@@ -102,7 +102,7 @@ JAZZMIN_SETTINGS = {
         "Inventario.Entrada": "fas fa-truck-loading",
         "Inventario.HistoricoPrecios": "fas fa-dollar-sign",
         "Local.Cliente": "far fa-user-circle",
-        "Local.Compra": "fas fa-shopping-cart",
+        "Local.Venta": "fas fa-shopping-cart",
         "Local.Juego": "fab fa-playstation",
         "Local.Consola": "fas fa-gamepad",
         "Local.Sesion": "fas fa-stopwatch",

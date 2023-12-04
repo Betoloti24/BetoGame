@@ -11,6 +11,10 @@ def consola_ocupada(value):
     consola = Consola.objects.filter(numero=value).first()
     if consola.ocupada:
         raise ValidationError("La consola seleccionada está ocupada")
+    
+def existencia_producto(producto, cantidad):
+    if not producto.cant_invent or producto.cant_invent < cantidad:
+        raise ValidationError("Cantidad no valida. Existencia del producto insuficiente.")
 
 """
     Modelo de Cliente
@@ -68,18 +72,46 @@ class Cliente(models.Model):
 """
 class Venta(models.Model):
     id = models.AutoField(primary_key=True)
-    productos = models.ManyToManyField('Inventario.Producto')
+    id_producto = models.ForeignKey('Inventario.Producto', on_delete=models.CASCADE)
     id_cliente = models.ForeignKey('Cliente', on_delete=models.CASCADE)
-    id_cuenta = models.ForeignKey('Caja.Cuenta', on_delete=models.CASCADE) 
+    id_cuenta = models.ForeignKey('Caja.Cuenta', null=True, blank=True, on_delete=models.CASCADE) 
     fh_venta = models.DateTimeField(auto_now_add=True, null=False)
     cantidad = models.IntegerField(null=False, validators=[MinValueValidator(1)])
-    monto = models.DecimalField(max_digits=5, decimal_places=2, null=False, validators=[MinValueValidator(1)])
 
     class Meta:
         ordering = ['-fh_venta']
         verbose_name = 'Venta'
         verbose_name_plural = 'Ventas'
-    
+
+    # realizamos las validaciones
+    def clean(self):
+        existencia_producto(self.id_producto, self.cantidad)
+        super().clean()
+
+    # guardar venta
+    def save(self, *args, **kwargs):
+        ## DISMINUIR EXISTENCIA
+        producto = self.id_producto
+        cantidad_compra = self.cantidad
+        print(producto)
+        # Validamos la existencia
+        
+        producto.cant_invent -= cantidad_compra
+        producto.save()
+
+        # Asignamos la cuenta
+        monto_dolar = (producto.precio_venta * cantidad_compra) 
+        cuenta_cliente = Cuenta.objects.filter(id_cliente=self.id_cliente, fh_pago=None).first()
+        if not cuenta_cliente:
+            cuenta_cliente = Cuenta(id_cliente = self.id_cliente, monto_deberdolar=monto_dolar)
+        else:
+            cuenta_cliente.monto_deberdolar += monto_dolar
+        cuenta_cliente.save()
+        self.id_cuenta = cuenta_cliente
+
+        # Guardar el registro
+        super().save(self, *args, **kwargs)
+
     def __str__(self) -> str:
         return f"{self.cantidad} unidades de {self.id_producto.nombre}"
 
@@ -182,32 +214,31 @@ class Sesion(models.Model):
 
     def save(self, *args, **kwargs):
         consola = Consola.objects.filter(numero=self.id_consola.numero).first()
-        if (not consola.ocupada):
-            # Asigno la hora de finalizacion
-            minutos_juego = self.cant_minutos + self.minutos_regalo
-            self.h_final = datetime.now() + timedelta(minutes=minutos_juego)
+        
+        # Asigno la hora de finalizacion
+        minutos_juego = self.cant_minutos + self.minutos_regalo
+        self.h_final = datetime.now() + timedelta(minutes=minutos_juego)
 
-            # Asigno la cuenta del cliente
+        # Asigno la cuenta del cliente
+        cuenta_cliente = Cuenta.objects.filter(id_cliente=self.id_cliente, fh_pago=None).first()
+        if not cuenta_cliente:
+            nueva_cuenta_cliente = Cuenta(id_cliente=self.id_cliente)
+            nueva_cuenta_cliente.save()
             cuenta_cliente = Cuenta.objects.filter(id_cliente=self.id_cliente, fh_pago=None).first()
-            if not cuenta_cliente:
-                nueva_cuenta_cliente = Cuenta(id_cliente=self.id_cliente)
-                nueva_cuenta_cliente.save()
-                cuenta_cliente = Cuenta.objects.filter(id_cliente=self.id_cliente, fh_pago=None).first()
-            
-            # Consultamos las variables de referencia
-            precio_hora = Variable.objects.filter(id=1).first().convert()
-            # Actualizamos los montos de la cuenta
-            monto_pagar_dolares = Decimal(str((minutos_juego/60)*precio_hora))
-            cuenta_cliente.monto_deberdolar += monto_pagar_dolares
-            cuenta_cliente.save()
-            self.id_cuenta = cuenta_cliente
+        
+        # Consultamos las variables de referencia
+        precio_hora = Variable.objects.filter(id=1).first().convert()
+        # Actualizamos los montos de la cuenta
+        monto_pagar_dolares = Decimal(str((minutos_juego/60)*precio_hora))
+        cuenta_cliente.monto_deberdolar += monto_pagar_dolares
+        cuenta_cliente.save()
+        self.id_cuenta = cuenta_cliente
 
-            # Actualizamos la ocupacion de la consola
-            consola.ocupada = True
-            consola.save()
-            super().save(*args, **kwargs)   
-        else:
-            raise ValidationError("La consola ya estaba ocupada")
+        # Actualizamos la ocupacion de la consola
+        consola.ocupada = True
+        consola.save()
+        super().save(*args, **kwargs)   
+        
 
     def __str__(self) -> str:
         return f"Con inicio {self.h_inicio} hasta las {self.h_final}"

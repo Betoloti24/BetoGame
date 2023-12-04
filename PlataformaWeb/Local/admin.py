@@ -1,5 +1,6 @@
 from django.contrib import admin 
 from .models import Venta, Cliente, Consola, Juego, Sesion
+from Caja.models import Cuenta, Variable
 from Inventario.models import Producto
 from datetime import datetime, timedelta
 from django.contrib import messages
@@ -17,27 +18,10 @@ cerrarSesionJuego.short_description = "Cerrar Sesión de Juego"
 
 @admin.register(Venta)
 class VentaAdmin(admin.ModelAdmin):
-    list_display = ('id', 'id_cliente', 'cantidad', 'monto', 'fecha_de_compra')
+    list_display = ('id', 'id_cliente', 'id_producto', 'cantidad', 'fecha_de_compra')
     date_hierarchy = 'fh_venta'
     ordering = ('-fh_venta',)
-
-    # # Actualizar cantidad en inventario del producto
-    # def save_model(self, request, obj, form, change):
-    #     # Guardar el modelo
-    #     super().save_model(request, obj, form, change)
-
-    #     # Disminuir la cantidad en inventario del producto
-    #     producto = obj.id_producto
-    #     cantidad_compra = obj.cantidad
-
-    #     if producto.cant_invent >= cantidad_compra:
-    #         producto.cant_invent -= cantidad_compra
-    #         producto.save()
-    #     else:
-    #         # Revertir la transacción si la cantidad en inventario es insuficiente
-    #         obj.delete()
-    #         message = f"No se puede vender {cantidad_compra} productos. Cantidad insuficiente en inventario ({producto.cant_invent})."
-    #         self.message_user(request, message, level='ERROR')
+    readonly_fields = ('id_cuenta',)
 
     # Ajustar el articulo del mensaje del administardor
     def message_user(self, request, message, level=messages.SUCCESS, extra_tags='', fail_silently=False):
