@@ -5,7 +5,7 @@ from .forms import PagoForm
 
 @admin.register(Cuenta)
 class CuentaAdmin(admin.ModelAdmin):
-    list_display = ['id', 'id_cliente', 'monto_deberdolar', 'monto_pagado', 'fecha_hora_creacion', 'fecha_hora_pago', 'fecha_hora_ultimo_pago']
+    list_display = ['id', 'id_cliente', 'monto_deberdolar', 'monto_pagado', 'fecha_hora_creacion', 'fecha_hora_pago']
     search_fields = ['id', 'id_cliente__nombre', 'id_cliente__apellido']
     date_hierarchy = 'fh_creacion'
     ordering = ('-fh_creacion',)

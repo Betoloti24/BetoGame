@@ -48,7 +48,7 @@ JAZZMIN_SETTINGS = {
         # App with dropdown menu to all its models pages (Permissions checked against models)
         {"app": "Inventario"},
         {"app": "Local"},
-        # {"app": "Caja"},
+        {"app": "Caja"},
     ],
 
     #############
