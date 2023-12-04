@@ -100,7 +100,7 @@ class Entrada(models.Model):
     id = models.AutoField(primary_key=True)
     costo_punidad = models.DecimalField(max_digits=5, decimal_places=2, null=False, validators=[MinValueValidator(1)])
     costo_mercancia = models.DecimalField(max_digits=8, decimal_places=2, null=False, validators=[MinValueValidator(1)])
-    costo_envio = models.DecimalField(max_digits=5, decimal_places=2, null=False, default=0, validators=[MinValueValidator(1)])
+    costo_envio = models.DecimalField(max_digits=5, decimal_places=2, null=False, default=0, validators=[MinValueValidator(0)])
     id_producto = models.ForeignKey('Producto', on_delete=models.CASCADE)
     fh_registro = models.DateTimeField(auto_now_add=True, null=False)
     
