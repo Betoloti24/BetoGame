@@ -16,7 +16,7 @@ from datetime import date
 class Producto(models.Model):
     id = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=20, null=False)
-    precio_venta = models.DecimalField(max_digits=4, decimal_places=2, null=False, validators=[MinValueValidator(1)])
+    precio_venta = models.DecimalField(max_digits=4, decimal_places=2, null=False, validators=[MinValueValidator(0)])
     precio_compra = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True, validators=[MinValueValidator(0)])
     cant_invent = models.IntegerField(null=True, blank=True, default=0, validators=[MinValueValidator(0)])
     
