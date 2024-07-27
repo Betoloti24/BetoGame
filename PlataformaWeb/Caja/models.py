@@ -169,6 +169,25 @@ class Cierre(models.Model):
     * tipo_dato: varchar(10) (Check)
     * fh_actualizacion: datetime(YYYY-MM-DD HH:MM:SS) 
 """
+
+class VariableManager(models.Manager):
+    def create(self, nombre, valor, tipo_dato, **extra_fields):
+        # Verificar que el tipo de dato es válido antes de la creación
+        if tipo_dato not in dict(Variable.TIPO_DATO):
+            raise ValueError("Tipo de dato no válido")
+        
+        # Crear el objeto utilizando el método `create` del padre
+        variable = super().create(
+            nombre=nombre,
+            valor=valor,
+            tipo_dato=tipo_dato,
+            fh_actualizacion=timezone.now(),
+            **extra_fields
+        )
+        # Aquí puedes agregar lógica adicional que se ejecuta después de guardar el objeto
+        HistoricoValores.objects.create(id_variable=variable, valor=variable.valor)
+        
+        return variable
 class Variable(models.Model):
     id = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=30)
@@ -180,7 +199,7 @@ class Variable(models.Model):
     ]
     tipo_dato = models.CharField(max_length=10, choices=TIPO_DATO)
     fh_actualizacion = models.DateTimeField(auto_now_add=True)
-
+    # objects = VariableManager()
     class Meta:
         verbose_name = 'Variable'
         verbose_name_plural = 'Variables'
