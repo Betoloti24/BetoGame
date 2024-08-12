@@ -30,7 +30,7 @@ SECRET_KEY = "django-insecure-xsk77@60c&srt=%arm2+6v6mkk+j=7_@53qqz-d-aw)kx@1$p&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["https://betoloti-game-c1796bb4aa34.herokuapp.com/"]
+ALLOWED_HOSTS = ["betoloti-game-c1796bb4aa34.herokuapp.com"]
 
 # Application definition
 
