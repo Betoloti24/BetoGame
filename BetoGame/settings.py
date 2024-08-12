@@ -30,12 +30,12 @@ SECRET_KEY = "django-insecure-xsk77@60c&srt=%arm2+6v6mkk+j=7_@53qqz-d-aw)kx@1$p&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["betoloti-game-c1796bb4aa34.herokuapp.com"]
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
 INSTALLED_APPS = [
-    "jazzmin",
+    # "jazzmin",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -68,7 +68,7 @@ ROOT_URLCONF = "BetoGame.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "template"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -150,7 +150,7 @@ STATIC_URL = "/static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-JAZZMIN_SETTINGS = JAZZMIN_SETTINGS
-JAZZMIN_UI_TWEAKS = DEFAULT_UI_TWEAKS
+# JAZZMIN_SETTINGS = JAZZMIN_SETTINGS
+# JAZZMIN_UI_TWEAKS = DEFAULT_UI_TWEAKS
 
-# django_heroku.settings(locals())
+django_heroku.settings(locals())
