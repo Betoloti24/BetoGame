@@ -96,11 +96,11 @@ if (DEBUG):
 else:
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'HOST': config("HOST_DATABASE"),
-            'USER': config("USER_DATABASE"),
-            'PASSWORD': config("PASSWORD_DATABASE"),
-            'NAME': config("NAME_DATABASE"),
+            'ENGINE': 'django.db.backends.postgresql_psycopg2', 
+            'NAME': config("NAME_DATABASE"), 
+            'USER': config("USER_DATABASE"), 
+            'PASSWORD': config("PASSWORD_DATABASE"), 
+            'HOST': config("HOST_DATABASE"), 
             'PORT': config("PORT_DATABASE")
         }
     }
