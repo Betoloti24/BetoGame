@@ -155,4 +155,4 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # JAZZMIN_SETTINGS = JAZZMIN_SETTINGS
 # JAZZMIN_UI_TWEAKS = DEFAULT_UI_TWEAKS
 
-# django_heroku.settings(locals())
+django_heroku.settings(locals())

@@ -39,7 +39,7 @@ class Cuenta(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f'Cuenta #{self.id} para el Cliente: {self.id_cliente.nombre} {self.id_cliente.apellido}'
+        return f'Cuenta de {self.monto_deberdolar}$ para el Cliente: {self.id_cliente.nombre} {self.id_cliente.apellido}'
 
 """
     Modelo de Pago

@@ -17,6 +17,10 @@ class SesionForm(forms.ModelForm):
             'cant_minutos': 'Cantidad de Minutos',
             'cant_personas': 'Cantidad de Personas',
         }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['id_cliente'].queryset = self.fields['id_cliente'].queryset.order_by('nombre')  # Reemplaza 'nombre' por el campo que define el nombre del cliente
 
 class ConsolaForm(forms.ModelForm):
     class Meta:
@@ -56,6 +60,11 @@ class VentaForm(forms.ModelForm):
             'fh_venta': 'Fecha de Venta',
             'id_cuenta': 'Cuenta'
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if len(self.fields) != 0:
+            self.fields['id_cliente'].queryset = self.fields['id_cliente'].queryset.order_by('nombre')
 
 class ClienteForm(forms.ModelForm):
     class Meta:
