@@ -30,7 +30,7 @@ def existencia_producto(producto, cantidad):
     ° f_actualizacion: date(YYYY-MM-DD)
 """
 class Cliente(models.Model):
-    ci = models.PositiveIntegerField(primary_key=True)
+    ci = models.CharField(primary_key=True, max_length=10)
     nombre = models.CharField(max_length=30, null=False)
     apellido = models.CharField(max_length=30, null=False)
     
