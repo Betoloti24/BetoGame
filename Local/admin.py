@@ -54,7 +54,7 @@ class VentaAdmin(admin.ModelAdmin):
 class ClienteAdmin(admin.ModelAdmin):
     list_display = ('set_ci', 'set_nombre', 'set_telefono', 'set_fecha_creacion')
     list_filter = ('genero',)
-    search_fields = ('nombre', 'apellido', 'correo', 'telefono')
+    search_fields = ('nombre', 'apellido', 'correo', 'telefono', 'ci')
     date_hierarchy = 'f_creacion'
     ordering = ('-f_creacion',)
     readonly_fields = ('f_actualizacion',)
@@ -117,7 +117,7 @@ class ConsolaAdmin(admin.ModelAdmin):
 
 @admin.register(Juego)
 class JuegoAdmin(admin.ModelAdmin):
-    list_display = ('set_id', 'set_nombre', 'set_precio_compra', 'set_cantidad', 'set_genero', 'set_fecha_compra')
+    list_display = ('set_id', 'set_nombre', 'set_precio_compra_dolar', 'set_cantidad', 'set_genero', 'set_fecha_compra')
     list_filter = ('genero',)
     search_fields = ('nombre',)
     ordering = ('-f_compra',)
@@ -129,8 +129,8 @@ class JuegoAdmin(admin.ModelAdmin):
         return obj.nombre
     def set_id(self, obj):
         return obj.id
-    def set_precio_compra(self, obj):
-        return f"{obj.precio_compra}$"
+    def set_precio_compra_dolar(self, obj):
+        return f"{obj.precio_compra_dolar}$"
     def set_cantidad(self, obj):
         return obj.cantidad
     def set_genero(self, obj):
@@ -147,7 +147,7 @@ class JuegoAdmin(admin.ModelAdmin):
     set_fecha_compra.short_description = "Fecha de Compra"
     set_nombre.short_description = "Nombre"
     set_id.short_description = "ID"
-    set_precio_compra.short_description = "Precio de Compra ($)"
+    set_precio_compra_dolar.short_description = "Precio de Compra ($)"
     set_cantidad.short_description = "Cantidad"
     set_genero.short_description = "Género"
 
@@ -155,7 +155,7 @@ class JuegoAdmin(admin.ModelAdmin):
 
 @admin.register(Sesion)
 class SesionAdmin(admin.ModelAdmin):
-    list_display = ('set_id', 'set_cantidad_horas', 'set_hora_inicio', 'set_hora_final', 'set_id_cliente', 'set_id_consola', 'set_abierto')
+    list_display = ('set_id', 'set_cantidad_minutos', 'set_cantidad_horas', 'set_hora_inicio', 'set_hora_final', 'set_id_cliente', 'set_id_consola', 'set_abierto')
     time_hierarchy = 'h_inicio'
     ordering = ('-f_sesion','-h_inicio',)
     readonly_fields = ('h_final','id_cuenta','abierto')
@@ -177,6 +177,8 @@ class SesionAdmin(admin.ModelAdmin):
         return obj.h_final.strftime("%I:%M:%S %p")
     def set_cantidad_horas(self, obj):
         return f"{round((obj.minutos_regalo + obj.cant_minutos)/60, 2)} horas"
+    def set_cantidad_minutos(self, obj):
+        return f"{obj.minutos_regalo + obj.cant_minutos} minutos"
     def set_id(self, obj):
         return obj.id
     def set_id_cliente(self, obj):
@@ -190,6 +192,7 @@ class SesionAdmin(admin.ModelAdmin):
     set_hora_inicio.short_description = "Hora de Inicio"
     set_hora_final.short_description = "Hora de Finalización"
     set_cantidad_horas.short_description = "Cantidad de Horas"
+    set_cantidad_minutos.short_description = "Cantidad de Minutos"
     set_id.short_description = "ID"
     set_id_cliente.short_description = "Cliente"
     set_id_consola.short_description = "N° Consola"

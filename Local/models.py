@@ -94,19 +94,19 @@ class Venta(models.Model):
         ## DISMINUIR EXISTENCIA
         producto = self.id_producto
         cantidad_compra = self.cantidad
-        print(producto)
+        # print(producto)
         # Validamos la existencia
         
         producto.cant_invent -= cantidad_compra
         producto.save()
 
         # Asignamos la cuenta
-        monto_dolar = (producto.precio_venta * cantidad_compra) 
+        monto = (producto.precio_venta * cantidad_compra) 
         cuenta_cliente = Cuenta.objects.filter(id_cliente=self.id_cliente, fh_pago=None).first()
         if not cuenta_cliente:
-            cuenta_cliente = Cuenta(id_cliente = self.id_cliente, monto_deberdolar=monto_dolar)
+            cuenta_cliente = Cuenta(id_cliente = self.id_cliente, monto_deber=monto)
         else:
-            cuenta_cliente.monto_deberdolar += monto_dolar
+            cuenta_cliente.monto_deber += monto
         cuenta_cliente.save()
         self.id_cuenta = cuenta_cliente
 
@@ -130,7 +130,7 @@ class Juego(models.Model):
     id = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=30, null=False)
     f_compra = models.DateField(auto_now_add=True, null=False)
-    precio_compra = models.DecimalField(max_digits=8, decimal_places=2, null=False, validators=[MinValueValidator(1)])
+    precio_compra_dolar = models.DecimalField(max_digits=8, decimal_places=2, null=False, validators=[MinValueValidator(1)])
     cantidad = models.PositiveIntegerField(null=False)
     
     GENERO_JUEGO = [
@@ -216,7 +216,6 @@ class Sesion(models.Model):
     def save(self, *args, **kwargs):
         from Caja.models import Cuenta, Variable
         consola = Consola.objects.filter(numero=self.id_consola.numero).first()
-        
         # Asigno la hora de finalizacion
         minutos_juego = self.cant_minutos + self.minutos_regalo
         self.h_final = datetime.now() + timedelta(minutes=minutos_juego)
@@ -230,9 +229,11 @@ class Sesion(models.Model):
         
         # Consultamos las variables de referencia
         precio_hora = Variable.objects.filter(id=1).first().convert()
+        cambio = Variable.objects.filter(id=2).first().convert()
         # Actualizamos los montos de la cuenta
-        monto_pagar_dolares = Decimal(str((self.cant_minutos/60)*precio_hora))
-        cuenta_cliente.monto_deberdolar += monto_pagar_dolares
+        monto_pagar_dolares = float(str((self.cant_minutos/60)*precio_hora))
+        # import pdb; pdb.set_trace()
+        cuenta_cliente.monto_deber += Decimal(monto_pagar_dolares*cambio)
         cuenta_cliente.save()
         self.id_cuenta = cuenta_cliente
 

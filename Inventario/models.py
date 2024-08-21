@@ -7,7 +7,8 @@ from datetime import date
     Modelo de Producto
     #* id: numerico(5)
     * nombre: varchar(20)
-    * precio_venta: numerico(4,2)
+    * precio_venta: numerico(10,2)
+    * precio_compra: numerico(10,2)
     * cant_invent: numerico(3)
     * tipo_producto: varchar(6) (Check) 
     * f_creacion: date(YYYY-MM-DD)
@@ -16,8 +17,8 @@ from datetime import date
 class Producto(models.Model):
     id = models.AutoField(primary_key=True)
     nombre = models.CharField(max_length=20, null=False)
-    precio_venta = models.DecimalField(max_digits=4, decimal_places=2, null=False, default=0.0, validators=[MinValueValidator(0)])
-    precio_compra = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True, default=0.0, validators=[MinValueValidator(0)])
+    precio_venta = models.DecimalField(max_digits=10, decimal_places=2, null=False, default=0.0, validators=[MinValueValidator(0)])
+    precio_compra = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, default=0.0, validators=[MinValueValidator(0)])
     cant_invent = models.IntegerField(null=True, blank=True, default=0, validators=[MinValueValidator(0)])
     
     TIPOS_PRODUCTO = [
@@ -65,14 +66,14 @@ class Producto(models.Model):
     Modelo de Historico de Precios
     #* id: numerico(5)
     * id_producto: numerico(5)
-    * precio: numerico(4,2)
+    * precio: numerico(10,2)
     * fh_registro: datetime(YYYY-MM-DDTHH:MM:SS) 
     * vigente: booleano
 """
 class HistoricoPrecios(models.Model):
     id = models.AutoField(primary_key=True)
     id_producto = models.ForeignKey('Producto', on_delete=models.CASCADE)
-    precio = models.DecimalField(max_digits=4, decimal_places=2, null=False, validators=[MinValueValidator(1)])
+    precio = models.DecimalField(max_digits=10, decimal_places=2, null=False, validators=[MinValueValidator(1)])
     fh_registro = models.DateTimeField(auto_now_add=True, null=False)
     vigente = models.BooleanField(default=True)
 
@@ -87,9 +88,9 @@ class HistoricoPrecios(models.Model):
 """
     Modelo de Entrada
     #* id: numerico(5)
-    * costo_punidad: numerico(5,2)
-    * costo_mercancia: numerico(8,2)
-    * costo_envio: numerico(5,2)
+    * costo_punidad: numerico(10,2)
+    * costo_mercancia: numerico(10,2)
+    * costo_envio: numerico(10,2)
     * cant_ingresada: numerico(5)
     * id_producto: numerico(5)
     * fh_registro: datetime(YYYY-MM-DDTHH:MM:SS) 
@@ -98,12 +99,11 @@ class HistoricoPrecios(models.Model):
 """
 class Entrada(models.Model):
     id = models.AutoField(primary_key=True)
-    costo_punidad = models.DecimalField(max_digits=5, decimal_places=2, null=False, validators=[MinValueValidator(1)])
-    costo_mercancia = models.DecimalField(max_digits=8, decimal_places=2, null=False, validators=[MinValueValidator(1)])
-    costo_envio = models.DecimalField(max_digits=5, decimal_places=2, null=False, default=0, validators=[MinValueValidator(0)])
+    costo_punidad = models.DecimalField(max_digits=10, decimal_places=2, null=False, validators=[MinValueValidator(1)])
+    costo_mercancia = models.DecimalField(max_digits=10, decimal_places=2, null=False, validators=[MinValueValidator(1)])
+    costo_envio = models.DecimalField(max_digits=10, decimal_places=2, null=False, default=0, validators=[MinValueValidator(0)])
     id_producto = models.ForeignKey('Producto', on_delete=models.CASCADE)
     fh_registro = models.DateTimeField(auto_now_add=True, null=False)
-    
     
     TIPOS_ENTRADA = [
         ('compra', 'Comprado'),

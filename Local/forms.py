@@ -43,7 +43,7 @@ class JuegoForm(forms.ModelForm):
             'id': 'ID',
             'nombre': 'Nombre',
             'f_compra': 'Fecha de Compra',
-            'precio_compra': 'Precio de Compra',
+            'precio_compra_dolar': 'Precio de Compra',
             'cantidad': 'Cantidad',
             'genero': 'Género',
             'tipo': 'Tipo',

@@ -28,7 +28,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-xsk77@60c&srt=%arm2+6v6mkk+j=7_@53qqz-d-aw)kx@1$p&"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ["betogame-ab2e038a09a4.herokuapp.com", "127.0.0.1"]
 
@@ -87,24 +87,17 @@ WSGI_APPLICATION = "BetoGame.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-if (DEBUG):
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
-        }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', 
+        'NAME': config("NAME_DATABASE"), 
+        'USER': config("USER_DATABASE"), 
+        'PASSWORD': config("PASSWORD_DATABASE"), 
+        'HOST': config("HOST_DATABASE"), 
+        'PORT': config("PORT_DATABASE")
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2', 
-            'NAME': config("NAME_DATABASE"), 
-            'USER': config("USER_DATABASE"), 
-            'PASSWORD': config("PASSWORD_DATABASE"), 
-            'HOST': config("HOST_DATABASE"), 
-            'PORT': config("PORT_DATABASE")
-        }
-    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators

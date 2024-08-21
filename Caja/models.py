@@ -6,9 +6,10 @@ from django.db.models import Q
 from datetime import date, datetime, timedelta
 from BetoGame.enums import MetodoPago
 from functools import reduce
+from decimal import Decimal
 ## REGLAS DE VERIFICACION
 def monto_pagar(cuenta, monto):
-    if cuenta.monto_deberdolar < monto:
+    if cuenta.monto_deber < monto:
         raise ValidationError("El monto a pagar excede la deuda")
 
 """
@@ -17,16 +18,16 @@ def monto_pagar(cuenta, monto):
     * id_cliente: numerico(8) (FK)
     * compras: numerico(5) (FK)
     * sesiones: numerico(5) (FK) 
-    * monto_deberdolar: numerico(5, 2)
-    * monto_pagado: numerico(5, 2)
+    * monto_deber: numerico(10, 2)
+    * monto_pagado: numerico(10, 2)
     * fh_creacion: datatime(YYYY-MM-DD HH:MM:SS)
-    ° fh_creacion: datatime(YYYY-MM-DD HH:MM:SS)
+    ° fh_pago: datatime(YYYY-MM-DD HH:MM:SS)
 """
 class Cuenta(models.Model):
     id = models.AutoField(primary_key=True)
     id_cliente = models.ForeignKey('Local.Cliente', on_delete=models.CASCADE)
-    monto_deberdolar = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
-    monto_pagado = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
+    monto_deber = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
+    monto_pagado = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
     fh_creacion = models.DateTimeField(auto_now_add=True, null=False)
     fh_ultimo_pago = models.DateTimeField(null=True, blank=True)
     fh_pago = models.DateTimeField(null=True, blank=True, default=None)
@@ -39,21 +40,23 @@ class Cuenta(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f'Cuenta de {self.monto_deberdolar}$ para el Cliente: {self.id_cliente.nombre} {self.id_cliente.apellido}'
+        from Caja.models import Variable
+        cambio = Variable.objects.filter(id=2).first().convert()
+        return f'Cuenta de {self.monto_deber}Bs ({round(self.monto_deber/cambio, 2)}$) para el Cliente: {self.id_cliente.nombre} {self.id_cliente.apellido}'
 
 """
     Modelo de Pago
     #* id: numerico(5)
     * id_cuenta: numerico/(5)
     * met_pago: varchar(10) (Check)
-    * montodolar: numerico(5,2)
+    * monto: numerico(10,2)
     * fh_pago: datetime(YYYY-MM-DD HH:MM:SS)
 """
 class Pago(models.Model):
     id = models.AutoField(primary_key=True)
     id_cuenta = models.ForeignKey('Cuenta', on_delete=models.CASCADE)
     met_pago = models.CharField(max_length=13, choices=MetodoPago.choices)
-    montodolar = models.DecimalField(max_digits=5, decimal_places=2)
+    monto = models.DecimalField(max_digits=10, decimal_places=2)
     fh_pago = models.DateTimeField(auto_now_add=True, null=False)
 
     class Meta:
@@ -62,7 +65,7 @@ class Pago(models.Model):
 
     # validaciones
     def clean(self):
-        monto_pagar(self.id_cuenta, self.montodolar)
+        monto_pagar(self.id_cuenta, self.monto)
         super().clean()
 
     # guardamos
@@ -71,10 +74,10 @@ class Pago(models.Model):
         
         # actualizamos la deuda y lo pagado de la cuenta
         cuenta = Cuenta.objects.filter(id=self.id_cuenta.id).first()
-        cuenta.monto_deberdolar -= self.montodolar
-        cuenta.monto_pagado += self.montodolar
+        cuenta.monto_deber -= self.monto
+        cuenta.monto_pagado += self.monto
         cuenta.fh_ultimo_pago = self.fh_pago
-        if (cuenta.monto_deberdolar == 0):
+        if (cuenta.monto_deber == 0):
             cuenta.fh_pago = timezone.now()
         cuenta.save()
 
@@ -90,6 +93,7 @@ class Pago(models.Model):
     * totalbs_fianza: numerico(8,2)
     * totaldolar_fianza: numerico(5,2)
     * total_horas: numerico(3) 
+    * total_minutos: numerico(5) 
     * total_jugadores: numerico(2)
     * totalbs_costoent: numerico(8,2)
     * totaldolar_costoent: numerico(5,2)
@@ -106,6 +110,7 @@ class Cierre(models.Model):
     totaldolar_costoent = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
     total_jugadores = models.DecimalField(max_digits=2, decimal_places=0, default=0.0)
     total_horas = models.DecimalField(max_digits=3, decimal_places=0, default=0.0)
+    total_minutos = models.DecimalField(max_digits=5, decimal_places=0, default=0.0)
 
     class Meta:
         verbose_name = 'Cierre'
@@ -121,40 +126,43 @@ class Cierre(models.Model):
         # calcular los ingresos
         pagos = Pago.objects.filter(fh_pago__range=(fecha_inicio, fecha_final))
         if pagos:
-            ingresos = float(sum([x.montodolar for x in pagos]))
+            ingresos = sum([x.monto for x in pagos])
         else:
             ingresos = 0
-        self.totaldolar_ingreso = ingresos
-        self.totalbs_ingreso = ingresos*cambio
+        self.totaldolar_ingreso = ingresos/cambio
+        self.totalbs_ingreso = ingresos
 
         # calcular fiado
         cuentas = Cuenta.objects.filter(Q(fh_ultimo_pago=None) | Q(fh_ultimo_pago__lte=fecha_final))
         if cuentas:
-            fiado = float(sum([x.monto_deberdolar for x in cuentas]))
+            fiado = sum([x.monto_deber for x in cuentas])
         else:
             fiado = 0
-        self.totaldolar_fianza = fiado
-        self.totalbs_fianza = fiado*cambio
+        self.totaldolar_fianza = fiado/cambio
+        self.totalbs_fianza = fiado
 
         # calcular cantidad de horas y jugadores
         sesiones = Sesion.objects.filter(f_sesion__range=(fecha_inicio, fecha_final))
         if sesiones:
             cant_horas = sum([(x.minutos_regalo+x.cant_minutos)/60 for x in sesiones])
+            cant_minutos = sum([x.minutos_regalo+x.cant_minutos for x in sesiones])
             cant_jugadores = sum([x.cant_personas for x in sesiones])
         else:
             cant_horas = 0
+            cant_minutos = 0
             cant_jugadores = 0
         self.total_horas = cant_horas
+        self.total_minutos = cant_minutos
         self.total_jugadores = cant_jugadores
 
         # calcular costo de entradas
         entradas = Entrada.objects.filter(fh_registro__range=(fecha_inicio, fecha_final))
         if entradas:
-            costo_entradas = float(sum([x.costo_mercancia + x.costo_envio for x in entradas]))
+            costo_entradas = sum([x.costo_mercancia + x.costo_envio for x in entradas])
         else:
             costo_entradas = 0
-        self.totaldolar_costoent = costo_entradas
-        self.totalbs_costoent = costo_entradas*cambio
+        self.totaldolar_costoent = costo_entradas/cambio
+        self.totalbs_costoent = costo_entradas
 
         super().save(*args, **kwargs)
 
@@ -228,7 +236,7 @@ class Variable(models.Model):
         if self.tipo_dato == 'Entero':
             return int(self.valor)
         elif self.tipo_dato == 'Decimal':
-            return float(self.valor)   
+            return Decimal(self.valor)   
         return self.valor
 
     def __str__(self):

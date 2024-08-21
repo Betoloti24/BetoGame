@@ -22,21 +22,27 @@ class ProductoAdmin(admin.ModelAdmin):
             return obj.f_actualizacion.strftime('%Y-%m-%d')
         return ""
     def set_precio_venta(self, obj):
-        return f"{obj.precio_venta:.2f}"
+        return f"{obj.precio_venta:.2f}Bs"
     def set_precio_compra(self, obj):
-        return f"{obj.precio_compra:.2f}" if obj.precio_compra else 0.0
+        return f"{obj.precio_compra:.2f}Bs" if obj.precio_compra else f"{0.0}Bs"
     def set_cant_invent(self, obj):
         return f"{obj.cant_invent}"
     def set_tipo_producto(self, obj):
-        return f"{obj.tipo_producto}"
+        tipos = {
+            'bebida': 'Bebida',
+            'dulce': 'Dulce',
+            'salado': 'Salado',
+            'otro': 'Otro',
+        }
+        return f"{tipos.get(obj.tipo_producto, obj.tipo_producto)}"
     def set_nombre(self, obj):
         return f"{obj.nombre}"
     
     # Asignacion de los nombres a los campos
     set_fecha_creacion.short_description = 'Fecha de Creación'
     set_fecha_actualizacion.short_description = 'Fecha de Actualización'
-    set_precio_venta.short_description = 'Precio de Venta ($)'
-    set_precio_compra.short_description = 'Precio de Compra ($)'
+    set_precio_venta.short_description = 'Precio de Venta (Bs)'
+    set_precio_compra.short_description = 'Precio de Compra (Bs)'
     set_cant_invent.short_description = 'Cantidad en Inventario'
     set_tipo_producto.short_description = 'Tipo de Producto'
     set_nombre.short_description = 'Nombre'
@@ -55,7 +61,7 @@ class HistoricoPreciosAdmin(admin.ModelAdmin):
     def set_fecha_creacion(self, obj):
         return obj.fh_registro.strftime('%Y-%m-%d')
     def set_precio(self, obj):
-        return f"{obj.precio:.2f}$"
+        return f"{obj.precio:.2f}Bs"
     def set_vigente(self, obj):
         return f"Si" if obj.vigente else "No"
     def set_id_producto(self, obj):
@@ -63,7 +69,7 @@ class HistoricoPreciosAdmin(admin.ModelAdmin):
     
     # Asignacion de los nombres a los campos
     set_fecha_creacion.short_description = 'Fecha de Creación'
-    set_precio.short_description = 'Precio ($)'
+    set_precio.short_description = 'Precio (Bs)'
     set_vigente.short_description = '¿Vigente?'
     set_id_producto.short_description = 'Producto'
 
@@ -105,11 +111,11 @@ class EntradaAdmin(admin.ModelAdmin):
             return 'Producción'
         return f"{obj.tipo_entrada}"
     def set_costo_punidad(self, obj):
-        return f"{obj.costo_punidad:.2f}$"
+        return f"{obj.costo_punidad:.2f}Bs"
     def set_costo_mercancia(self, obj):
-        return f"{obj.costo_mercancia:.2f}$"
+        return f"{obj.costo_mercancia:.2f}Bs"
     def set_costo_envio(self, obj):
-        return f"{obj.costo_envio:.2f}$"
+        return f"{obj.costo_envio:.2f}Bs"
     def set_cant_ingresada(self, obj):
         return f"{obj.cant_ingresada} unidades"
     
@@ -117,9 +123,9 @@ class EntradaAdmin(admin.ModelAdmin):
     set_fecha_creacion.short_description = 'Fecha de Creación'
     set_id_producto.short_description = 'Producto'
     set_tipo_entrada.short_description = 'Tipo de Entrada'
-    set_costo_punidad.short_description = 'Costo por Unidad ($)'
-    set_costo_mercancia.short_description = 'Costo de Mercancia ($)'
-    set_costo_envio.short_description = 'Costo de Envio ($)'
+    set_costo_punidad.short_description = 'Costo por Unidad (Bs)'
+    set_costo_mercancia.short_description = 'Costo de Mercancia (Bs)'
+    set_costo_envio.short_description = 'Costo de Envio (Bs)'
     set_cant_ingresada.short_description = 'Cantidad Ingresada'
 
     form = EntradaForm

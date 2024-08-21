@@ -8,8 +8,8 @@ class CuentaForm(forms.ModelForm):
         fields = '__all__'
         labels = {
             'id_cliente': 'Cliente',
-            'monto_deberdolar': 'Deuda ($)',
-            'monto_pagado': 'Pagado ($)',
+            'monto_deber': 'Deuda (Bs)',
+            'monto_pagado': 'Pagado (Bs)',
             'fh_creacion': 'Fecha de Creación',
             'fh_ultimo_pago': 'Fecha de Último Pago',
             'fh_pago': 'Fecha de Cierre', 
@@ -21,7 +21,7 @@ class PagoForm(forms.ModelForm):
         fields = '__all__'
         labels = {
             'id_cuenta': 'Cuenta',
-            'montodolar': 'Monto a Pagar ($)',
+            'monto': 'Monto a Pagar (Bs)',
             'met_pago': 'Método de Pago',
             'fh_pago': 'Fecha de Pago',
         }
@@ -48,6 +48,7 @@ class CierreForm(forms.ModelForm):
             'totaldolar_costoent': 'Costo de Mercancia ($)',
             'total_jugadores': 'Total de Jugadores',
             'total_horas': 'Total de Horas',
+            'total_minutos': 'Total de Minutos',
         }
 
 class VariableForm(forms.ModelForm):
