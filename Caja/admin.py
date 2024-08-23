@@ -8,6 +8,7 @@ class CuentaAdmin(admin.ModelAdmin):
     list_display = ['id', 'set_id_cliente', 'set_monto_deber', 'set_monto_pagado', 'set_monto_deber_dolar', 'set_monto_pagado_dolar', 'set_fecha_hora_creacion', 'set_fecha_hora_ultimo_pago', 'set_fecha_hora_pago']
     search_fields = ['id', 'id_cliente__nombre', 'id_cliente__apellido', 'id_cliente__ci']
     date_hierarchy = 'fh_creacion'
+    list_filter = ('fh_pago',)
     ordering = ('-fh_pago', '-fh_ultimo_pago', '-fh_creacion')
     readonly_fields = ('fh_creacion', 'fh_pago', 'monto_deber', 'monto_pagado', 'fh_ultimo_pago', "id_cliente")
 
