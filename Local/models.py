@@ -248,4 +248,4 @@ class Sesion(models.Model):
         
 
     def __str__(self) -> str:
-        return f"Con inicio {self.h_inicio} hasta las {self.h_final}"
+        return f"Con inicio {self.h_inicio.hour}:{self.h_inicio.minute} hasta las {self.h_final.hour}:{self.h_final.minute}"

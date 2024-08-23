@@ -155,7 +155,7 @@ class JuegoAdmin(admin.ModelAdmin):
 
 @admin.register(Sesion)
 class SesionAdmin(admin.ModelAdmin):
-    list_display = ('set_id', 'set_cantidad_minutos', 'set_cantidad_horas', 'set_hora_inicio', 'set_hora_final', 'set_id_cliente', 'set_id_consola', 'set_abierto')
+    list_display = ('set_id', 'set_cantidad_horas', 'set_cantidad_minutos', 'set_hora_inicio', 'set_hora_final', 'set_id_cliente', 'set_id_consola', 'set_abierto')
     time_hierarchy = 'h_inicio'
     ordering = ('-f_sesion','-h_inicio',)
     readonly_fields = ('h_final','id_cuenta','abierto')

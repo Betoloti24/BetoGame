@@ -123,7 +123,7 @@ class Cierre(models.Model):
     totaldolar_fianza = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
     totalbs_costoent = models.DecimalField(max_digits=8, decimal_places=2, default=0.0)
     totaldolar_costoent = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
-    total_jugadores = models.DecimalField(max_digits=2, decimal_places=0, default=0.0)
+    total_jugadores = models.DecimalField(max_digits=3, decimal_places=0, default=0.0)
     total_horas = models.DecimalField(max_digits=3, decimal_places=0, default=0.0)
     total_minutos = models.DecimalField(max_digits=5, decimal_places=0, default=0.0)
 
