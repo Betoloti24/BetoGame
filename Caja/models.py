@@ -45,6 +45,11 @@ class Cuenta(models.Model):
 
     def __str__(self):
         return f'Cuenta de {self.monto_deber}Bs ({self.monto_deber_dolar}$) para el Cliente: {self.id_cliente.nombre} {self.id_cliente.apellido}'
+    
+    def ajustar_deuda(self, cambio):
+        self.monto_deber = self.monto_deber_dolar*cambio
+        self.save()
+
 
 """
     Modelo de Pago
@@ -229,7 +234,7 @@ class Variable(models.Model):
         super().save(*args, **kwargs)
         
         # Generamos un historico de valores si se actualiza el registro
-        reg_vigente = HistoricoValores.objects.filter(id_variable=self).first()
+        reg_vigente = HistoricoValores.objects.filter(id_variable=self, vigente=True).first()
         if (not reg_vigente or reg_vigente.valor != self.valor):
             # Verifica si ya hay un historico vigente y lo marca como no vigente
             historico_vigente = HistoricoValores.objects.filter(id_variable=self, vigente=True).first()
@@ -240,6 +245,20 @@ class Variable(models.Model):
             # Crea un nuevo registro en el historico
             nuevo_historico = HistoricoValores(id_variable=self, valor=self.valor, vigente=True)
             nuevo_historico.save()
+
+            # validamos si estamos actualizando el tipo de cambio
+            if self.id == 2:
+                # realizamos un ajuste en los precios y deudas en $
+                ## deudas
+                cuentas = Cuenta.objects.filter(fh_pago=None)
+                for cuenta in cuentas: cuenta.ajustar_deuda(self.convert())
+
+                ## precios
+                from Inventario.models import Producto
+                productos = Producto.objects.all()
+                for producto in productos: producto.ajustar_precio(self.convert())
+                    
+
 
     def convert(self):
         if self.tipo_dato == 'Entero':

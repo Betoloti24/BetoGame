@@ -69,6 +69,10 @@ class Producto(models.Model):
 
     def __str__(self) -> str:
         return f"{self.nombre}"
+    
+    def ajustar_precio(self, cambio):
+        self.precio_venta = self.precio_venta_dolar*cambio
+        self.save()
 
 """
     Modelo de Historico de Precios
