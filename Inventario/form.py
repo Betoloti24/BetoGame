@@ -35,6 +35,11 @@ class EntradaForm(forms.ModelForm):
             'proveedor': 'Proveedor'
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if len(self.fields) != 0:
+            self.fields['id_producto'].queryset = self.fields['id_producto'].queryset.order_by('nombre')
+
 class HistoricoPreciosForm(forms.ModelForm):
     class Meta:
         model = HistoricoPrecios

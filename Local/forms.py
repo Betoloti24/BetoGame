@@ -65,6 +65,7 @@ class VentaForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         if len(self.fields) != 0:
             self.fields['id_cliente'].queryset = self.fields['id_cliente'].queryset.order_by('nombre')
+            self.fields['id_producto'].queryset = self.fields['id_producto'].queryset.order_by('nombre')
 
 class ClienteForm(forms.ModelForm):
     class Meta:
