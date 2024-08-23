@@ -5,10 +5,10 @@ from Caja.forms import PagoForm, CuentaForm, CierreForm, VariableForm
 
 @admin.register(Cuenta)
 class CuentaAdmin(admin.ModelAdmin):
-    list_display = ['id', 'set_id_cliente', 'set_monto_deber', 'set_monto_pagado', 'set_fecha_hora_creacion', 'set_fecha_hora_ultimo_pago', 'set_fecha_hora_pago']
+    list_display = ['id', 'set_id_cliente', 'set_monto_deber', 'set_monto_pagado', 'set_monto_deber_dolar', 'set_monto_pagado_dolar', 'set_fecha_hora_creacion', 'set_fecha_hora_ultimo_pago', 'set_fecha_hora_pago']
     search_fields = ['id', 'id_cliente__nombre', 'id_cliente__apellido', 'id_cliente__ci']
     date_hierarchy = 'fh_creacion'
-    ordering = ('-fh_pago', '-fh_creacion')
+    ordering = ('-fh_pago', '-fh_ultimo_pago', '-fh_creacion')
     readonly_fields = ('fh_creacion', 'fh_pago', 'monto_deber', 'monto_pagado', 'fh_ultimo_pago', "id_cliente")
 
     # Formateo de los campos
@@ -29,6 +29,10 @@ class CuentaAdmin(admin.ModelAdmin):
         return f"{obj.monto_pagado:.2f}Bs"
     def set_monto_deber(self, obj):
         return f"{obj.monto_deber:.2f}Bs"
+    def set_monto_deber_dolar(self, obj):
+        return f"{obj.monto_deber_dolar:.2f}$"
+    def set_monto_pagado_dolar(self, obj):
+        return f"{obj.monto_pagado_dolar:.2f}$"
     def set_id_cliente(self, obj):
         return f"{obj.id_cliente.nombre} {obj.id_cliente.apellido}"
     
@@ -38,25 +42,29 @@ class CuentaAdmin(admin.ModelAdmin):
     set_fecha_hora_ultimo_pago.short_description = 'Fecha del Último Pago'
     set_monto_pagado.short_description = 'Pagado (Bs)'
     set_monto_deber.short_description = 'Deuda (Bs)'
+    set_monto_deber_dolar.short_description = 'Deuda ($)'
+    set_monto_pagado_dolar.short_description = 'Pagado ($)'
     set_id_cliente.short_description = 'Cliente'
 
     form = CuentaForm
 
 @admin.register(Pago)
 class PagoAdmin(admin.ModelAdmin):
-    list_display = ['id', 'set_id_cuenta', 'set_monto', 'set_met_pago', 'set_fecha_hora_pago']
+    list_display = ['id', 'set_id_cuenta', 'set_monto', 'set_monto_dolar', 'set_met_pago', 'set_fecha_hora_pago']
     list_filter = ('met_pago',)
     search_fields = ['id', 'id_cuenta__id']
     date_hierarchy = 'fh_pago'
     ordering = ('-fh_pago',)
-    readonly_fields = ('fh_pago',)
+    readonly_fields = ('fh_pago', 'monto_dolar')
 
     # Formateo de los campos
     def set_fecha_hora_pago(self, obj):
         hora = obj.fh_pago - timedelta(hours=4)
         return hora.strftime('%d/%m/%Y %I:%M:%S %p')
     def set_monto(self, obj):
-        return f"{obj.monto:.2f}Bs"
+        return f"{obj.monto:.2f}Bs" if obj.monto else "0.0Bs"
+    def set_monto_dolar(self, obj):
+        return f"{obj.monto_dolar:.2f}$" if obj.monto_dolar else "0.0$"
     def set_id_cuenta(self, obj):
         return f"Cuenta {obj.id_cuenta.id}: {obj.id_cuenta.id_cliente.nombre} {obj.id_cuenta.id_cliente.apellido}"
     def set_met_pago(self, obj):
@@ -71,6 +79,7 @@ class PagoAdmin(admin.ModelAdmin):
     # Asignacion de los nombres a los campos
     set_fecha_hora_pago.short_description = 'Fecha de Pago'
     set_monto.short_description = 'Pagado (Bs)'
+    set_monto_dolar.short_description = 'Pagado ($)'
     set_id_cuenta.short_description = 'Cuenta'
     set_met_pago.short_description = 'Método de Pago'
 
@@ -102,7 +111,7 @@ class CierreAdmin(admin.ModelAdmin):
     def set_total_horas(self, obj):
         return f"{obj.total_horas} horas"
     def set_total_minutos(self, obj):
-        return f"{obj.total_horas} min"
+        return f"{obj.total_minutos} min"
     def set_total_jugadores(self, obj):
         return f"{obj.total_jugadores} jugadores"
     

@@ -90,7 +90,7 @@ class Venta(models.Model):
     # guardar venta
     def save(self, *args, **kwargs):
         from Caja.models import Cuenta, Variable
-        
+        cambio = Variable.objects.filter(id=2).first().convert()
         ## DISMINUIR EXISTENCIA
         producto = self.id_producto
         cantidad_compra = self.cantidad
@@ -102,11 +102,13 @@ class Venta(models.Model):
 
         # Asignamos la cuenta
         monto = (producto.precio_venta * cantidad_compra) 
+        monto_dolar = monto/cambio
         cuenta_cliente = Cuenta.objects.filter(id_cliente=self.id_cliente, fh_pago=None).first()
         if not cuenta_cliente:
-            cuenta_cliente = Cuenta(id_cliente = self.id_cliente, monto_deber=monto)
+            cuenta_cliente = Cuenta(id_cliente = self.id_cliente, monto_deber=monto, monto_deber_dolar=monto_dolar)
         else:
             cuenta_cliente.monto_deber += monto
+            cuenta_cliente.monto_deber_dolar += monto_dolar
         cuenta_cliente.save()
         self.id_cuenta = cuenta_cliente
 
@@ -231,9 +233,11 @@ class Sesion(models.Model):
         precio_hora = Variable.objects.filter(id=1).first().convert()
         cambio = Variable.objects.filter(id=2).first().convert()
         # Actualizamos los montos de la cuenta
-        monto_pagar_dolares = float(str((self.cant_minutos/60)*precio_hora))
         # import pdb; pdb.set_trace()
-        cuenta_cliente.monto_deber += Decimal(monto_pagar_dolares*cambio)
+        monto_pagar_dolares = Decimal(self.cant_minutos/60)*precio_hora
+        # import pdb; pdb.set_trace()
+        cuenta_cliente.monto_deber += monto_pagar_dolares*cambio
+        cuenta_cliente.monto_deber_dolar += monto_pagar_dolares
         cuenta_cliente.save()
         self.id_cuenta = cuenta_cliente
 

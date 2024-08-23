@@ -10,6 +10,8 @@ class CuentaForm(forms.ModelForm):
             'id_cliente': 'Cliente',
             'monto_deber': 'Deuda (Bs)',
             'monto_pagado': 'Pagado (Bs)',
+            'monto_deber_dolar': 'Deuda ($)',
+            'monto_pagado_dolar': 'Pagado ($)',
             'fh_creacion': 'Fecha de Creación',
             'fh_ultimo_pago': 'Fecha de Último Pago',
             'fh_pago': 'Fecha de Cierre', 
@@ -22,6 +24,7 @@ class PagoForm(forms.ModelForm):
         labels = {
             'id_cuenta': 'Cuenta',
             'monto': 'Monto a Pagar (Bs)',
+            'monto_dolar': 'Monto a Pagar ($)',
             'met_pago': 'Método de Pago',
             'fh_pago': 'Fecha de Pago',
         }

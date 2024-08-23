@@ -7,10 +7,12 @@ from datetime import date, datetime, timedelta
 from BetoGame.enums import MetodoPago
 from functools import reduce
 from decimal import Decimal
+from django.core.validators import MinValueValidator
+
 ## REGLAS DE VERIFICACION
-def monto_pagar(cuenta, monto):
-    if cuenta.monto_deber < monto:
-        raise ValidationError("El monto a pagar excede la deuda")
+def monto_pagar(cuenta, monto_bs):
+    if cuenta.monto_deber < monto_bs:
+        raise ValidationError("El monto a pagar excede la deuda.")
 
 """
     Modelo de Cuenta:
@@ -28,6 +30,8 @@ class Cuenta(models.Model):
     id_cliente = models.ForeignKey('Local.Cliente', on_delete=models.CASCADE)
     monto_deber = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
     monto_pagado = models.DecimalField(max_digits=10, decimal_places=2, default=0.0)
+    monto_deber_dolar = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
+    monto_pagado_dolar = models.DecimalField(max_digits=5, decimal_places=2, default=0.0)
     fh_creacion = models.DateTimeField(auto_now_add=True, null=False)
     fh_ultimo_pago = models.DateTimeField(null=True, blank=True)
     fh_pago = models.DateTimeField(null=True, blank=True, default=None)
@@ -40,9 +44,7 @@ class Cuenta(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        from Caja.models import Variable
-        cambio = Variable.objects.filter(id=2).first().convert()
-        return f'Cuenta de {self.monto_deber}Bs ({round(self.monto_deber/cambio, 2)}$) para el Cliente: {self.id_cliente.nombre} {self.id_cliente.apellido}'
+        return f'Cuenta de {self.monto_deber}Bs ({self.monto_deber_dolar}$) para el Cliente: {self.id_cliente.nombre} {self.id_cliente.apellido}'
 
 """
     Modelo de Pago
@@ -56,7 +58,8 @@ class Pago(models.Model):
     id = models.AutoField(primary_key=True)
     id_cuenta = models.ForeignKey('Cuenta', on_delete=models.CASCADE)
     met_pago = models.CharField(max_length=13, choices=MetodoPago.choices)
-    monto = models.DecimalField(max_digits=10, decimal_places=2)
+    monto = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True, validators=[MinValueValidator(1)])
+    monto_dolar = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, validators=[MinValueValidator(1)])
     fh_pago = models.DateTimeField(auto_now_add=True, null=False)
 
     class Meta:
@@ -70,15 +73,22 @@ class Pago(models.Model):
 
     # guardamos
     def save(self, *args, **kwargs):
+        from Caja.models import Variable
+        cambio = Variable.objects.filter(id=2).first().convert()
+        self.monto_dolar = self.monto/cambio
         super().save(*args, **kwargs)
-        
+        # consultamos el cambio del dia
         # actualizamos la deuda y lo pagado de la cuenta
         cuenta = Cuenta.objects.filter(id=self.id_cuenta.id).first()
         cuenta.monto_deber -= self.monto
+        cuenta.monto_deber_dolar -= self.monto/cambio
         cuenta.monto_pagado += self.monto
+        cuenta.monto_pagado_dolar += self.monto/cambio
+
         cuenta.fh_ultimo_pago = self.fh_pago
         if (cuenta.monto_deber == 0):
             cuenta.fh_pago = timezone.now()
+        # import pdb; pdb.set_trace()
         cuenta.save()
 
 
@@ -163,7 +173,6 @@ class Cierre(models.Model):
             costo_entradas = 0
         self.totaldolar_costoent = costo_entradas/cambio
         self.totalbs_costoent = costo_entradas
-
         super().save(*args, **kwargs)
 
     def __str__(self):
@@ -214,7 +223,7 @@ class Variable(models.Model):
 
     def save(self, *args, **kwargs):
         # Actualizar la fecha de actualización al día actual
-        self.f_actualizacion = timezone.now()
+        self.fh_actualizacion = timezone.now()
         
         # Guardamos
         super().save(*args, **kwargs)
